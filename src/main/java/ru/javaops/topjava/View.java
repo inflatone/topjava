@@ -6,4 +6,7 @@ public class View {
 
     public interface JsonUI {
     }
+
+    public interface ValidatedUI {
+    }
 }

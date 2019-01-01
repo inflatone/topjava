@@ -6,13 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.javaops.topjava.View;
+import ru.javaops.topjava.View.ValidatedUI;
 import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.service.MealService;
 import ru.javaops.topjava.to.MealTo;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -37,7 +38,7 @@ public class MealUIController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
+    public ResponseEntity<String> createOrUpdate(@Validated(ValidatedUI.class) Meal meal, BindingResult result) {
         return result.hasErrors() ? createErrorResponse(result) : createOrUpdate(meal);
     }
 
