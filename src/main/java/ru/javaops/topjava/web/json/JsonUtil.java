@@ -1,6 +1,9 @@
 package ru.javaops.topjava.web.json;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +33,14 @@ public class JsonUtil {
             return getMapper().writeValueAsString(entity);
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid write to JSON:\n'" + entity + '\'', e);
+        }
+    }
+
+    public static <T> String writeValue(T entity, ObjectWriter writer) {
+        try {
+            return writer.writeValueAsString(entity);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Invalid write to JSON:\n'" + entity + "'", e);
         }
     }
 }

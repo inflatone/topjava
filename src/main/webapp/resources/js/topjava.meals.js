@@ -19,13 +19,7 @@ $(function () {
         datatableOpts: {
             "columns": [
                 {
-                    "data": "dateTime",
-                    "render": function (data, type, row) {
-                        if (type === "display") {
-                            return formatDate(data);
-                        }
-                        return data;
-                    }
+                    "data": "dateTimeUI"
                 },
                 {
                     "data": "description"
