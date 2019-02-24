@@ -36,6 +36,19 @@ public class UserMealsUtil {
                 .collect(Collectors.toList());
     }
 
+    public static List<UserMealWithExceed> getFilteredWithExceededInOneReturn(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        return meals.stream().collect(
+                Collectors.groupingBy(m -> m.getDateTime().toLocalDate())
+        ).values().stream().flatMap(
+                dayMeals -> {
+                    boolean exceed = dayMeals.stream().mapToInt(UserMeal::getCalories).sum() > caloriesPerDay;
+                    return dayMeals.stream().filter(
+                            m -> TimeUtil.isBetween(m.getDateTime().toLocalTime(), startTime, endTime)
+                    ).map(m -> createWithExcess(m, exceed));
+                }
+        ).collect(Collectors.toList());
+    }
+
     private static UserMealWithExceed createWithExcess(UserMeal meal, boolean excess) {
         return new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
