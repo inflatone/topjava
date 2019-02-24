@@ -7,10 +7,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -48,6 +51,42 @@ public class UserMealsUtil {
                 }
         ).collect(Collectors.toList());
     }
+
+    public static List<UserMealWithExceed> getFilteredWithExceededWithAgregator(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        final class Aggregate {
+            private final List<UserMeal> dailyMeals = new ArrayList<>();
+            private int dailySumOfCalories;
+
+            private void accumulate(UserMeal meal) {
+                dailySumOfCalories += meal.getCalories();
+                if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                    dailyMeals.add(meal);
+                }
+            }
+
+            // never invoked if the upstream is sequential (only if parallel)
+            private Aggregate combine(Aggregate that) {
+                this.dailySumOfCalories += that.dailySumOfCalories;
+                this.dailyMeals.addAll(that.dailyMeals);
+                return this;
+            }
+
+            private Stream<UserMealWithExceed> finisher() {
+                return meals.stream().map(m -> createWithExcess(m, dailySumOfCalories > caloriesPerDay));
+            }
+        }
+        Map<LocalDate, Stream<UserMealWithExceed>> streamsPerDay = meals.stream()
+                .collect(Collectors.groupingBy(
+                        m -> m.getDateTime().toLocalDate(),
+                        Collector.of(Aggregate::new, Aggregate::accumulate, Aggregate::combine, Aggregate::finisher))
+                );
+        return streamsPerDay.values().stream()
+                .flatMap(x -> x)
+                .collect(Collectors.toList());
+
+
+    }
+
 
     private static UserMealWithExceed createWithExcess(UserMeal meal, boolean excess) {
         return new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
