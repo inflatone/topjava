@@ -12,11 +12,7 @@
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt>Дата:</dt>
-            <dd><input type="text" name="date" size="50" value="<%=TimeUtil.format(meal.getDate())%>"></dd>
-        </dl>
-        <dl>
-            <dt>Время:</dt>
-            <dd><input type="text" name="time" size="50" value="<%=TimeUtil.format(meal.getTime())%>"></dd>
+            <dd><input type="datetime-local" name="date" value=${meal.dateTime}></dd>
         </dl>
         <dl>
             <dt>Описание:</dt>

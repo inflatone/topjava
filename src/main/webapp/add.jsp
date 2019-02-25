@@ -11,11 +11,7 @@
         <jsp:useBean id="date" type="java.time.LocalDateTime" scope="request"/>
         <dl>
             <dt>Дата:</dt>
-            <dd><input type="text" name="date" size="50" value="<%=TimeUtil.format(date.toLocalDate())%>"></dd>
-        </dl>
-        <dl>
-            <dt>Время:</dt>
-            <dd><input type="text" name="time" size="50" value="<%=TimeUtil.format(date.toLocalTime())%>"></dd>
+            <dd><input type="datetime-local" name="date" size="50" value="${date}"></dd>
         </dl>
         <dl>
             <dt>Описание:</dt>

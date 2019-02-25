@@ -4,6 +4,15 @@
 <html>
 <head>
     <title>Meals</title>
+    <style>
+        .normal {
+            color: green;
+        }
+
+        .exceeded {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <section>
@@ -20,31 +29,16 @@
         <jsp:useBean id="meals" scope="request" type="java.util.List"/>
         <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealWithExceed"/>
-            <c:choose>
-                <c:when test="${meal.exceed}">
-                    <tr style="color:red">
-                    <td><%=TimeUtil.format(meal.getDate())%>
-                    </td>
-                    <td><%=TimeUtil.format(meal.getTime())%>
-                    </td>
-                    <td>${meal.description}</td>
-                    <td>${meal.calories}</td>
-                    <td><a href="meals?id=${meal.id}&action=edit"><img src="img/pencil.png" alt="Edit"></a></td>
-                    <td><a href="meals?id=${meal.id}&action=remove"><img src="img/delete.png" alt="Delete"></a></td>
-                </c:when>
-                <c:otherwise>
-                    <tr style="color:green">
-                        <td><%=TimeUtil.format(meal.getDate())%>
-                        </td>
-                        <td><%=TimeUtil.format(meal.getTime())%>
-                        </td>
-                        <td>${meal.description}</td>
-                        <td>${meal.calories}</td>
-                        <td><a href="meals?id=${meal.id}&action=edit"><img src="img/pencil.png" alt="Edit"></a></td>
-                        <td><a href="meals?id=${meal.id}&action=remove"><img src="img/delete.png" alt="Delete"></a></td>
-                    </tr>
-                </c:otherwise>
-            </c:choose>
+            <tr class="${meal.exceed ? "exceeded" : "normal"}">
+                <td><%=TimeUtil.format(meal.getDate())%>
+                </td>
+                <td><%=TimeUtil.format(meal.getTime())%>
+                </td>
+                <td>${meal.description}</td>
+                <td>${meal.calories}</td>
+                <td><a href="meals?id=${meal.id}&action=edit"><img src="img/pencil.png" alt="Edit"></a></td>
+                <td><a href="meals?id=${meal.id}&action=remove"><img src="img/delete.png" alt="Delete"></a></td>
+            </tr>
         </c:forEach>
     </table>
 </section>

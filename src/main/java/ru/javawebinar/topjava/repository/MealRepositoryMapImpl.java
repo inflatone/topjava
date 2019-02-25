@@ -22,7 +22,7 @@ public class MealRepositoryMapImpl implements MealRepository {
                 new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
                 new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
                 new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
-        ).collect(Collectors.toMap(Meal::getId, Function.identity()));
+        ).collect(Collectors.toConcurrentMap(Meal::getId, Function.identity()));
     }
 
     @Override
