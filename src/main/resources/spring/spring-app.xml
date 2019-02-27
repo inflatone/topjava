@@ -12,11 +12,11 @@
     </bean>
 -->
 
-    <bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepositoryImpl" id="inMemoryMealRepository"/>
+    <!--<bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepositoryImpl" id="inMemoryMealRepository"/>
 
     <bean class="ru.javawebinar.topjava.service.MealServiceImpl">
         <constructor-arg name="repository" ref="inMemoryMealRepository"/>
-    </bean>
+    </bean>-->
 
     <!-- Not necessary, already included with component-scan -->
     <!--<context:annotation-config/>-->
