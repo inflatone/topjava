@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -20,8 +22,11 @@ import java.time.LocalTime;
 //                "m.description=:desc where m.id=:id and m.user.id=:userId")
 })
 @Entity
+@NamedEntityGraph(name = Meal.GRAPH_WITH_USER, attributeNodes = @NamedAttributeNode("user"))
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_user_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
+    public static final String GRAPH_WITH_USER = "Meal.withUser";
+
     public static final String ALL_SORTED = "Meal.getAll";
     public static final String DELETE = "Meal.delete";
     public static final String GET_BETWEEN = "Meal.getBetween";
@@ -41,6 +46,7 @@ public class Meal extends AbstractBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @LazyToOne(LazyToOneOption.NO_PROXY)
     @NotNull
     private User user;
 
