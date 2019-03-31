@@ -26,7 +26,7 @@ import javax.annotation.PostConstruct;
 //@ExtendWith(SpringExtension.class)
 @Transactional
 @ActiveProfiles(resolver = AllActiveProfileResolver.class)
-abstract class AbstractControllerTest {
+public abstract class AbstractControllerTest {
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 
     static {
