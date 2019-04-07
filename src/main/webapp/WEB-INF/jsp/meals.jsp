@@ -18,7 +18,7 @@
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
         </dl>
         <dl>
-            <dt>spring:message code="meal.endDate"/>:</dt>
+            <dt><spring:message code="meal.endDate"/>:</dt>
             <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
         </dl>
         <dl>
