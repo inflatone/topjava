@@ -13,7 +13,7 @@ function clearFilter() {
 
 $(function () {
     makeEditable({
-        ajaxUrl: "ajax/profile/meals",
+        ajaxUrl: "ajax/profile/meals/",
         datatableApi: $("#datatable").DataTable({
             "paging": false,
             "info": true,
@@ -44,5 +44,5 @@ $(function () {
             ]
         }),
         updateTable: updateFilteredTable
-    })
-})
+    });
+});

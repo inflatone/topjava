@@ -38,7 +38,7 @@
             </form>
         </div>
         <div class="card-footer text-right">
-            <button class="card-footer text-right">
+            <button class="btn btn-danger" onclick="clearFilter()">
                 <span class="fa fa-remove"></span>
                 <spring:message code="common.cancel"/>
             </button>
@@ -63,7 +63,7 @@
             <th></th>
         </tr>
         </thead>
-        <c:forEach items="${meals}" var="meals">
+        <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr data-mealExcess="${meal.excess}">
                 <td>
@@ -101,7 +101,7 @@
                     <div class="form-group">
                         <label for="description" class="col-form-label"><spring:message
                                 code="meal.description"/></label>
-                        <input type="text" class="form-control" id="description" name="descriptipon"
+                        <input type="text" class="form-control" id="description" name="description"
                                placeholder="<spring:message code="meal.description"/>">
                     </div>
 

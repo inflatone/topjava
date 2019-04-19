@@ -25,7 +25,7 @@ function deleteRow(id) {
         }).done(function () {
             context.updateTable();
             successNoty("Deleted");
-        })
+        });
     }
 }
 
