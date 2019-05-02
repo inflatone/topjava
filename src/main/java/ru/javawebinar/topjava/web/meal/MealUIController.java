@@ -32,7 +32,6 @@ public class MealUIController extends AbstractMealController {
 
     @Override
     @GetMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Meal get(@PathVariable int id) {
         return super.get(id);
     }

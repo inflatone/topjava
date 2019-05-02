@@ -1,11 +1,9 @@
 package ru.javawebinar.topjava.web.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static ru.javawebinar.topjava.web.json.JacksonObjectMapper.getMapper;
 

@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <%--<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>--%>
@@ -15,55 +14,57 @@
     <div class="container">
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
         <%--https://getbootstrap.com/docs/4.0/components/card/--%>
-        <div class="card-body pb-0">
-            <form id="filter">
-                <div class="row">
-                    <div class="offset-1 col-2">
-                        <label for="startDate"><spring:message code="meal.startDate"/></label>
-                        <input class="form-control" name="startDate" id="startDate">
+        <div class="card border-dark">
+            <div class="card-body pb-0">
+                <form id="filter">
+                    <div class="row">
+                        <div class="offset-1 col-2">
+                            <label for="startDate"><spring:message code="meal.startDate"/></label>
+                            <input class="form-control" name="startDate" id="startDate">
+                        </div>
+                        <div class="col-2">
+                            <label for="endDate"><spring:message code="meal.endDate"/></label>
+                            <input class="form-control" name="endDate" id="endDate">
+                        </div>
+                        <div class="offset-2 col-2">
+                            <label for="startTime"><spring:message code="meal.startTime"/></label>
+                            <input class="form-control" name="startTime" id="startTime">
+                        </div>
+                        <div class="col-2">
+                            <label for="endTime"><spring:message code="meal.endTime"/></label>
+                            <input class="form-control" name="endTime" id="endTime">
+                        </div>
                     </div>
-                    <div class="col-2">
-                        <label for="endDate"><spring:message code="meal.endDate"/></label>
-                        <input class="form-control" name="endDate" id="endDate">
-                    </div>
-                    <div class="offset-2 col-2">
-                        <label for="startTime"><spring:message code="meal.startTime"/></label>
-                        <input class="form-control" name="startTime" id="startTime">
-                    </div>
-                    <div class="col-2">
-                        <label for="endTime"><spring:message code="meal.endTime"/></label>
-                        <input class="form-control" name="endTime" id="endTime">
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="card-footer text-right">
+                <button class="btn btn-danger" onclick="clearFilter()">
+                    <span class="fa fa-remove"></span>
+                    <spring:message code="common.cancel"/>
+                </button>
+                <button class="btn btn-primary" onclick="updateFilteredTable()">
+                    <span class="fa fa-filter"></span>
+                    <spring:message code="meal.filter"/>
+                </button>
+            </div>
         </div>
-        <div class="card-footer text-right">
-            <button class="btn btn-danger" onclick="clearFilter()">
-                <span class="fa fa-remove"></span>
-                <spring:message code="common.cancel"/>
-            </button>
-            <button class="btn btn-primary" onclick="updateFilteredTable()">
-                <span class="fa fa-filter"></span>
-                <spring:message code="meal.filter"/>
-            </button>
-        </div>
+        <br/>
+        <button class="btn btn-primary" onclick="add()">
+            <span class="fa fa-plus"></span>
+            <spring:message code="common.add"/>
+        </button>
+        <table class="table table-striped" id="datatable">
+            <thead>
+            <tr>
+                <th><spring:message code="meal.dateTime"/></th>
+                <th><spring:message code="meal.description"/></th>
+                <th><spring:message code="meal.calories"/></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+        </table>
     </div>
-    <br/>
-    <button class="btn btn-primary" onclick="add()">
-        <span class="fa fa-plus"></span>
-        <spring:message code="common.add"/>
-    </button>
-    <table class="table table-striped" id="datatable">
-        <thead>
-        <tr>
-            <th><spring:message code="meal.dateTime"/></th>
-            <th><spring:message code="meal.description"/></th>
-            <th><spring:message code="meal.calories"/></th>
-            <th></th>
-            <th></th>
-        </tr>
-        </thead>
-    </table>
 </div>
 
 <div class="modal fade" tabindex="-1" id="editRow">
