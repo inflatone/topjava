@@ -2,10 +2,16 @@ package ru.javawebinar.topjava.web;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.support.SessionStatus;
+import ru.javawebinar.topjava.to.UserTo;
+import ru.javawebinar.topjava.web.user.AbstractUserController;
+
+import javax.validation.Valid;
 
 @Controller
-public class RootController {
+public class RootController extends AbstractUserController {
     @GetMapping("/")
     public String root() {
         return "redirect:meals";
@@ -26,5 +32,20 @@ public class RootController {
     @GetMapping("/meals")
     public String meals() {
         return "meals";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
+
+    public String updateProfile(@Valid UserTo userTo, BindingResult result, SessionStatus status) {
+        if (result.hasErrors()) {
+            return "profile";
+        }
+        super.update(userTo, SecurityUtil.authUserId());
+        SecurityUtil.get().update(userTo);
+        status.setComplete();
+        return "redirect:meals";
     }
 }
