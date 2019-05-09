@@ -54,7 +54,7 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR);
     }
 
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)    // 422
     @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
     public ErrorInfo bindValidationError(HttpServletRequest request, Exception e) {
         BindingResult result = e instanceof BindException ?

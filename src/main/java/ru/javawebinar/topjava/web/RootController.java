@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -46,10 +47,15 @@ public class RootController extends AbstractUserController {
         if (result.hasErrors()) {
             return "profile";
         }
-        super.update(userTo, SecurityUtil.authUserId());
-        SecurityUtil.get().update(userTo);
-        status.setComplete();
-        return "redirect:meals";
+        try {
+            super.update(userTo, SecurityUtil.authUserId());
+            SecurityUtil.get().update(userTo);
+            status.setComplete();
+            return "redirect:meals";
+        } catch (DataIntegrityViolationException e) {
+            result.rejectValue("email", EXCEPTION_DUPLICATE_EMAIL);
+            return "profile";
+        }
     }
 
     @GetMapping("/register")
@@ -65,8 +71,14 @@ public class RootController extends AbstractUserController {
             model.addAttribute("register", true);
             return "profile";
         }
-        super.create(UserUtil.createNewFromTo(userTo));
-        status.setComplete();
-        return "redirect:login?message=app.registered&username=" + userTo.getEmail();
+        try {
+            super.create(UserUtil.createNewFromTo(userTo));
+            status.setComplete();
+            return "redirect:login?message=app.registered&username=" + userTo.getEmail();
+        } catch (DataIntegrityViolationException e) {
+            result.rejectValue("email", EXCEPTION_DUPLICATE_EMAIL);
+            model.addAttribute("register", true);
+            return "profile";
+        }
     }
 }
