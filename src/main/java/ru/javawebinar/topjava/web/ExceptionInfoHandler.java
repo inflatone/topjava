@@ -1,9 +1,9 @@
 package ru.javawebinar.topjava.web;
 
 
-import javassist.compiler.ast.BinExpr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,9 +24,9 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
-
-
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -34,6 +34,17 @@ import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ExceptionInfoHandler {
     private static final Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
+
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
+    public static final String EXCEPTION_DUPLICATE_DATETIME = "exception.meal.duplicateDateTime";
+
+    private static final Map<String, String> CONSTRAINS_I18N_MAP = Map.of(
+            "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
+            "meals_unique_user_datetime_idx", EXCEPTION_DUPLICATE_DATETIME
+    );
+
+    @Autowired
+    private MessageUtil messageUtil;
 
     //  http://stackoverflow.com/a/22358422/548473
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)    // 422
@@ -45,6 +56,16 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT)    // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo handleConflict(HttpServletRequest request, DataIntegrityViolationException e) {
+        String rootMessage = ValidationUtil.getRootCause(e).getMessage();
+        if (rootMessage != null) {
+            String lowerCaseMessage = rootMessage.toLowerCase();
+            Optional<Map.Entry<String, String>> entry = CONSTRAINS_I18N_MAP.entrySet().stream()
+                    .filter(it -> lowerCaseMessage.contains(it.getKey()))
+                    .findAny();
+            if (entry.isPresent()) {
+                return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR, messageUtil.getMessage(entry.get().getValue()));
+            }
+        }
         return logAndGetErrorInfo(request, e, true, DATA_ERROR);
     }
 
