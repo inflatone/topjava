@@ -17,6 +17,7 @@
                 <form:form cssClass="form-group" modelAttribute="userTo" method="post"
                            action="${register ? 'register' : 'profile'}"
                            charset="utf-8" accept-charset="UTF-8">
+                    <input name="id" value="${userTo.id}" type="hidden">
                     <topjava:inputField labelCode="user.name" name="name"/>
                     <topjava:inputField labelCode="user.email" name="email"/>
                     <topjava:inputField labelCode="user.password" name="password" inputType="password"/>
