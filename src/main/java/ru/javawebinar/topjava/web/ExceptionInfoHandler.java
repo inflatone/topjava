@@ -25,7 +25,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
@@ -80,11 +79,8 @@ public class ExceptionInfoHandler {
     public ErrorInfo bindValidationError(HttpServletRequest request, Exception e) {
         BindingResult result = e instanceof BindException ?
                 ((BindException) e).getBindingResult() : ((MethodArgumentNotValidException) e).getBindingResult();
-        String[] details = result.getFieldErrors().stream().map(error -> {
-            String message = error.getDefaultMessage();
-            return message == null ? messageUtil.getMessage(error)
-                    : message.startsWith(error.getField()) ? message : error.getField() + ' ' + message;
-        }).filter(Objects::nonNull)
+        String[] details = result.getFieldErrors().stream()
+                .map(error -> messageUtil.getMessage(error))
                 .toArray(String[]::new);
         return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR, details);
     }
@@ -96,7 +92,7 @@ public class ExceptionInfoHandler {
     }
 
 
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType, String... details) {
+    private ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType, String... details) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(errorType + " at request " + request.getRequestURL(), rootCause);
@@ -104,6 +100,7 @@ public class ExceptionInfoHandler {
             log.warn("{} at request {}: {}", errorType, request.getRequestURL(), rootCause);
         }
         return new ErrorInfo(request.getRequestURL(), errorType,
+                messageUtil.getMessage(errorType.getErrorCode()),
                 details.length != 0 ? details : new String[]{ValidationUtil.getMessage(rootCause)});
     }
 }
