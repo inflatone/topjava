@@ -12,7 +12,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div  class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <sec:authorize access="isAuthenticated()">
@@ -20,14 +20,16 @@
                             <sec:authorize access="hasRole('ROLE_ADMIN')">
                                 <a class="btn btn-info mr-1" href="users"><spring:message code="user.title"/></a>
                             </sec:authorize>
-                            <a class="btn btn-info mr-1" href="profile">${userTo.name} <spring:message code="app.profile"/></a>
+                            <a class="btn btn-info mr-1" href="profile"><sec:authentication
+                                    property="principal.userTo.name"/><spring:message code="app.profile"/></a>
                             <button class="btn btn-primary" type="submit">
                                 <span class="fa fa-sign-out"></span>
                             </button>
                         </form:form>
                     </sec:authorize>
                     <sec:authorize access="isAnonymous()">
-                        <form:form class="form-inline my-2" id="login_form" action="spring_security_check" method="post">
+                        <form:form class="form-inline my-2" id="login_form" action="spring_security_check"
+                                   method="post">
                             <input class="form-control mr-1" type="text" placeholder="Email" name="username">
                             <input class="form-control mr-1" type="password" placeholder="Password" name="password">
                             <button class="btn btn-success" type="submit">
@@ -37,7 +39,8 @@
                     </sec:authorize>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="dropdown-toggle nav-link my-1 ml-2" data-toggle="dropdown">${pageContext.response.locale}</a>
+                    <a class="dropdown-toggle nav-link my-1 ml-2"
+                       data-toggle="dropdown">${pageContext.response.locale}</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="${requestScope['javax.servlet.forward.request_uri']}?lang=en">English</a>
                         <a class="dropdown-item" href="${requestScope['javax.servlet.forward.request_uri']}?lang=ru">Русский</a>

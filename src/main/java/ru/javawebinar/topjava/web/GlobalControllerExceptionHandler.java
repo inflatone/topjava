@@ -36,11 +36,6 @@ public class GlobalControllerExceptionHandler {
         mav.addObject("typeMessage", messageUtil.getMessage(errorType.getErrorCode()));
         mav.addObject("exception", rootCause);
         mav.addObject("message", ValidationUtil.getMessage(rootCause));
-        // Interceptor is not invoked, put userTo
-        AuthorizedUser user = SecurityUtil.safeGet();
-        if (user != null) {
-            mav.addObject("userTo", user.getUserTo());
-        }
         return mav;
     }
 }
