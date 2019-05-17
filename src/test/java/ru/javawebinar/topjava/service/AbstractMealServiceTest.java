@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -11,8 +12,7 @@ import java.time.LocalDate;
 import java.time.Month;
 
 import static java.time.LocalDateTime.of;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -64,7 +64,10 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Test
     void updateNotFound() throws Exception {
         NotFoundException e = assertThrows(NotFoundException.class, () -> service.update(MEAL1, ADMIN_ID));
-        assertEquals("Not found entity with id=" + MEAL1_ID, e.getMessage());
+        String message = e.getMessage();
+        assertTrue(message.contains(ErrorType.DATA_NOT_FOUND.name()));
+        assertTrue(message.contains(NotFoundException.NOT_FOUND_EXCEPTION));
+        assertTrue(message.contains(String.valueOf(MEAL1_ID)));
     }
 
     @Test
