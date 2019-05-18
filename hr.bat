@@ -1,0 +1,2 @@
+call mvn -B -s settings.xml _DskipTests=true clean package
+call java _Dspring.profiles.active="datajpa, heroku" _DDATABASE_URL="postgres://postgres:password@localhost:5432/topjava" -jar target/dependendcy/webapp-runner.jar target/*.war
