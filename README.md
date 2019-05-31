@@ -1,6 +1,3 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7d3cb1e7c9e94932b0b45091c9d39353)](https://www.codacy.com/app/sane5ever/topjava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sane5ever/topjava&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.org/sane5ever/topjava.svg?branch=master)](https://travis-ci.org/sane5ever/topjava)
-
 Java Enterprise Online Project 
 ===============================
 Разработка полнофункционального Spring/JPA Enterprise приложения c авторизацией и правами доступа на основе ролей с использованием наиболее популярных инструментов и технологий Java: Maven, Spring MVC, Security, JPA(Hibernate), REST(Jackson), Bootstrap (css,js), datatables, jQuery + plugins, Java 8 Stream and Time API и хранением в базах данных Postgresql и HSQLDB.
@@ -140,10 +137,11 @@ Java Enterprise Online Project
 - 12: Обращайте внимание на комментарии к вашим коммитам в git. Они должны быть короткие и информативные (лучше на english)
 - 13: Не полагайтесь в решении на то, что список будет подаваться отсортированным. Такого условия нет.
 -----
+## [Пример 7-го занятия онлайн стажировки, несколько видео открыто](https://github.com/JavaOPs/topjava/blob/master/doc/lesson07.md)
 
 ### Полезные ресурсы
 > ВНИМАНИЕ:
->  - ДЗ первого урока будет связано с <a href="https://danielniko.wordpress.com/2012/04/17/simple-crud-using-jsp-servlet-and-mysql/">созданием небольшого CRUD приложения (в памяти, без DB) на JSP и сервлетах</a>. Введение будет, но предварительное знакомство не помешает.
+>  - **ДЗ первого урока будет связано с [созданием небольшого CRUD приложения (в памяти, без DB) на JSP и сервлетах](https://danielniko.wordpress.com/2012/04/17/simple-crud-using-jsp-servlet-and-mysql/)**. Введение будет, но предварительное знакомство не помешает.
 >  - основы JavaSсript необходимы для понимания проекта, начиная с 8-го занятия!
 
 Все остальное - опционально.
@@ -176,8 +174,8 @@ Java Enterprise Online Project
 -  <a href="https://github.com/winterbe/java8-tutorial">A Guide to Java 8</a>
 
 ### Туториалы, разное
-[Что нужно знать о бэкенде новичку в веб-разработке](https://tproger.ru/translations/backend-web-development)
-[Туториалы: Spring Framework, Hibernate, Java Core, JDBC](http://proselyte.net/tutorials/)
+- [Что нужно знать о бэкенде новичку в веб-разработке](https://tproger.ru/translations/backend-web-development)
+- [Туториалы: Spring Framework, Hibernate, Java Core, JDBC](http://proselyte.net/tutorials/)
 
 #### Сервлеты
 -  <a href="https://devcolibri.com/как-создать-servlet-полное-руководство/">Как создать Servlet? Полное руководство.</a>
