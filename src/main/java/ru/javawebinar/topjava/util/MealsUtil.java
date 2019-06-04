@@ -7,9 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
@@ -29,12 +27,27 @@ public class MealsUtil {
     }
 
     public static List<MealTo> getFilteredWithExcess(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> caloriesPerDayMap = meals.stream().collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
-        return meals.stream(
-        ).filter(m -> TimeUtil.isBetween(m.getTime(), startTime, endTime)
-        ).map(m -> new MealTo(
-                m.getDateTime(), m.getDescription(), m.getCalories(),
-                caloriesPerDayMap.get(m.getDate()) > caloriesPerDay)
-        ).collect(Collectors.toList());
+        final Map<LocalDate, Integer> caloriesSumPerDay = meals.stream().collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
+        return meals.stream()
+                .filter(m -> TimeUtil.isBetween(m.getTime(), startTime, endTime))
+                .map(m -> createWithExcess(m, caloriesSumPerDay.get(m.getDate()) > caloriesPerDay))
+                .collect(Collectors.toList());
+    }
+
+    public static List<MealTo> getFilteredWithExcessCycle(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        final Map<LocalDate, Integer> caloriesSumPerDay = new HashMap<>();
+        meals.forEach(m -> caloriesSumPerDay.merge(m.getDate(), m.getCalories(), Integer::sum));
+
+        final List<MealTo> result = new ArrayList<>();
+        meals.forEach(m -> {
+            if (TimeUtil.isBetween(m.getTime(), startTime, endTime)) {
+                result.add(createWithExcess(m, caloriesSumPerDay.get(m.getDate()) > caloriesPerDay));
+            }
+        });
+        return result;
+    }
+
+    private static MealTo createWithExcess(Meal meal, boolean excess) {
+        return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }
