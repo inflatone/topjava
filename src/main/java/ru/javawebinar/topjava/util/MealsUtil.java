@@ -8,7 +8,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MealsUtil {
     public static void main(String[] args) {
@@ -22,8 +25,6 @@ public class MealsUtil {
         );
         List<MealTo> mealsWithExcess = getFilteredWithExcess(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsWithExcess.forEach(System.out::println);
-//        .toLocalDate();
-//        .toLocalTime();
     }
 
     public static List<MealTo> getFilteredWithExcess(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
@@ -45,6 +46,36 @@ public class MealsUtil {
             }
         });
         return result;
+    }
+
+    public static List<MealTo> getFilteredWithExcessInOnePass(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        final class Aggregate {
+            private final List<Meal> dailyMeals = new ArrayList<>();
+            private int dailySumOfCalories;
+
+            private void accumulate(Meal meal) {
+                dailySumOfCalories += meal.getCalories();
+                if (TimeUtil.isBetween(meal.getTime(), startTime, endTime)) {
+                    dailyMeals.add(meal);
+                }
+            }
+
+            // never invoked if the upstream is sequential
+            private Aggregate combine(Aggregate that) {
+                dailySumOfCalories += that.dailySumOfCalories;
+                dailyMeals.addAll(that.dailyMeals);
+                return this;
+            }
+
+            private Stream<MealTo> finisher() {
+                final boolean excess = dailySumOfCalories > caloriesPerDay;
+                return dailyMeals.stream().map(m -> createWithExcess(m, excess));
+            }
+        }
+
+        return meals.stream().collect(Collectors.groupingBy(
+                Meal::getDate, Collector.of(Aggregate::new, Aggregate::accumulate, Aggregate::combine, Aggregate::finisher))
+        ).values().stream().flatMap(Function.identity()).collect(Collectors.toList());
     }
 
     private static MealTo createWithExcess(Meal meal, boolean excess) {
