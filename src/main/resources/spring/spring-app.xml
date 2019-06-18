@@ -5,4 +5,8 @@
     <bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepositoryImpl" id="inMemoryUserRepository"/>
     <bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepositoryImpl" id="inMemoryMealRepository"/>
 
+    <bean class="ru.javawebinar.topjava.service.UserServiceImpl">
+        <property name="repository" ref="inMemoryUserRepository"/>
+    </bean>
+
 </beans>
