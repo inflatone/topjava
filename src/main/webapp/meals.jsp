@@ -11,7 +11,7 @@
         }
 
         .excess {
-            color: red;
+            color: blue;
         }
     </style>
 </head>
