@@ -1,10 +1,9 @@
 package ru.javawebinar.topjava.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
-import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletConfig;
@@ -19,14 +18,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-
-    private MealRepository repository;
+    private ConfigurableApplicationContext springContext;
+    private MealRestController mealController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        repository = new InMemoryMealRepository();
+        springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        mealController = springContext.getBean(MealRestController.class);
+    }
+
+    @Override
+    public void destroy() {
+        springContext.close();
+        super.destroy();
     }
 
     @Override
@@ -35,13 +40,15 @@ public class MealServlet extends HttpServlet {
         String id = req.getParameter("id");
 
         Meal meal = new Meal(
-                id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(req.getParameter("dateTime")),
                 req.getParameter("description"),
                 Integer.valueOf(req.getParameter("calories"))
         );
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        repository.save(meal, SecurityUtil.authUserId());
+        if (StringUtils.isEmpty(req.getParameter("id"))) {
+            mealController.create(meal);
+        } else {
+            mealController.update(meal, getId(req));
+        }
         resp.sendRedirect("meals");
     }
 
@@ -51,22 +58,20 @@ public class MealServlet extends HttpServlet {
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(req);
-                log.info("Delete {}", id);
-                repository.delete(id, SecurityUtil.authUserId());
+                mealController.delete(id);
                 resp.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action)
                         ? new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000)
-                        : repository.get(getId(req), SecurityUtil.authUserId());
+                        : mealController.get(getId(req));
                 req.setAttribute("meal", meal);
                 req.getRequestDispatcher("/mealForm.jsp").forward(req, resp);
                 break;
             case "all":
             default:
-                log.info("getAll");
-                req.setAttribute("meals", MealsUtil.getWithExcess(repository.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                req.setAttribute("meals", mealController.getAll());
                 req.getRequestDispatcher("/meals.jsp").forward(req, resp);
                 break;
         }
