@@ -41,7 +41,7 @@ public class MealServlet extends HttpServlet {
                 Integer.valueOf(req.getParameter("calories"))
         );
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        repository.save(meal);
+        repository.save(meal, SecurityUtil.authUserId());
         resp.sendRedirect("meals");
     }
 
@@ -52,21 +52,21 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = getId(req);
                 log.info("Delete {}", id);
-                repository.delete(id);
+                repository.delete(id, SecurityUtil.authUserId());
                 resp.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action)
                         ? new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000)
-                        : repository.get(getId(req));
+                        : repository.get(getId(req), SecurityUtil.authUserId());
                 req.setAttribute("meal", meal);
                 req.getRequestDispatcher("/mealForm.jsp").forward(req, resp);
                 break;
             case "all":
             default:
                 log.info("getAll");
-                req.setAttribute("meals", MealsUtil.getWithExcess(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                req.setAttribute("meals", MealsUtil.getWithExcess(repository.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 req.getRequestDispatcher("/meals.jsp").forward(req, resp);
                 break;
         }
