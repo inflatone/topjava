@@ -10,12 +10,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.UserTestData.*;
+
 @Repository
 public class InMemoryUserRepository extends InMemoryBaseRepository<User> implements UserRepository {
-    static final int USER_ID = 1;
-    static final int ADMIN_ID = 2;
 
-    private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
+    public void init() {
+        entryMap.clear();
+        entryMap.put(USER_ID, USER);
+        entryMap.put(ADMIN_ID, ADMIN);
+    }
 
     @Override
     public User getByEmail(String email) {
@@ -24,7 +28,6 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
 
     @Override
     public List<User> getAll() {
-        log.info("getAll");
         return getCollection().stream()
                 .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());
