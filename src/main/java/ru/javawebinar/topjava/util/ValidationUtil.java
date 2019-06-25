@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 public class ValidationUtil {
 
@@ -19,7 +20,7 @@ public class ValidationUtil {
 
     public static void checkNotFound(boolean found, String message) {
         if (!found) {
-            throw new NumberFormatException("Not found entity with " + message);
+            throw new NotFoundException("Not found entity with " + message);
         }
     }
 
