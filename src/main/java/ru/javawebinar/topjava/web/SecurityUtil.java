@@ -2,8 +2,10 @@ package ru.javawebinar.topjava.web;
 
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
+
 public class SecurityUtil {
-    private static int id = 1;
+    private static int id = START_SEQ;
 
     public static int authUserId() {
         return id;
