@@ -7,6 +7,9 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 public class SecurityUtil {
     private static int id = START_SEQ;
 
+    private SecurityUtil() {
+    }
+
     public static int authUserId() {
         return id;
     }
