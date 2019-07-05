@@ -5,11 +5,15 @@ import ru.javawebinar.topjava.model.User;
 
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+
 @Controller
 public class AdminRestController extends AbstractUserController {
-    @Override
+
     public User create(User user) {
-        return super.create(user);
+        log.info("create {}", user);
+        checkNew(user);
+        return service.create(user);
     }
 
     @Override
@@ -17,9 +21,9 @@ public class AdminRestController extends AbstractUserController {
         return super.get(id);
     }
 
-    @Override
     public User getByEmail(String email) {
-        return super.getByEmail(email);
+        log.info("getByEmail {}", email);
+        return service.getByEmail(email);
     }
 
     @Override
@@ -32,8 +36,8 @@ public class AdminRestController extends AbstractUserController {
         super.delete(id);
     }
 
-    @Override
     public List<User> getAll() {
-        return super.getAll();
+        log.info("getAll");
+        return service.getAll();
     }
 }

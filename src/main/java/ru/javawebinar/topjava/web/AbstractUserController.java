@@ -13,22 +13,11 @@ public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserService service;
-
-    public User create(User user) {
-        log.info("create {}", user);
-        ValidationUtil.checkNew(user);
-        return service.create(user);
-    }
+    protected UserService service;
 
     public User get(int id) {
         log.info("get {}", id);
         return service.get(id);
-    }
-
-    public User getByEmail(String email) {
-        log.info("getByEmail {}", email);
-        return service.getByEmail(email);
     }
 
     public void update(User user, int id) {
@@ -40,11 +29,5 @@ public abstract class AbstractUserController {
     public void delete(int id) {
         log.info("delete {}", id);
         service.delete(id);
-    }
-
-    public List<User> getAll() {
-        log.info("getAll");
-        return service.getAll();
-
     }
 }
