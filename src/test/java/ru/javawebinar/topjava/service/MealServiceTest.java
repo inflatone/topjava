@@ -102,7 +102,7 @@ public class MealServiceTest {
     @Test
     public void getNotFound() {
         thrown.expect(NotFoundException.class);
-        service.get(0, USER_ID);
+        service.get(1, USER_ID);
     }
 
     @Test
