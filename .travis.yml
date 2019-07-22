@@ -7,6 +7,10 @@ cache:
   directories:
     - $HOME/.m2
 
+services:
+  - postgresql
+
+
 # https://docs.travis-ci.com/user/database-setup/#PostgreSQL
 before_script:
   - psql -c 'create database topjava' -U postgres
@@ -19,4 +23,8 @@ branches:
 
 # https://docs.travis-ci.com/user/notifications#Configuring-email-notifications
 notifications:
-  email: false
+  email:
+    recipients:
+      - sane5ever@gmail.com
+    on_success: never # default: change
+    on_failure: always # default: always
