@@ -9,10 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 
 
 @NamedQueries({
@@ -55,6 +52,10 @@ public class User extends AbstractNamedEntity {
     @Range(min = 10, max = 10000)
     @Column(name = "calories_per_day", nullable = false, columnDefinition = "int default 2000")
     private int caloriesPerDay;
+
+    @OrderBy("dateTime DESC")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    protected List<Meal> meals;
 
     public User() {
     }
@@ -111,6 +112,10 @@ public class User extends AbstractNamedEntity {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public List<Meal> getMeals() {
+        return meals;
     }
 
     public void setRoles(Collection<Role> roles) {
