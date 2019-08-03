@@ -2,6 +2,7 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -15,7 +16,10 @@ import java.util.List;
 
 public class SpringMain {
     public static void main(String[] args) {
-        try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/inmemory.xml")) {
+        try (GenericXmlApplicationContext context = new GenericXmlApplicationContext ()) {
+            context.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
+            context.load("spring/spring-app.xml", "spring/inmemory.xml");
+            context.refresh();
             System.out.println("bean definition names:");
             for (String name : context.getBeanDefinitionNames()) {
                 System.out.println(name);
