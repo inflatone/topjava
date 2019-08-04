@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -15,7 +16,7 @@ import java.util.*;
 @NamedQueries({
         @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
         @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=?1"),
-        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email")
+        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u ORDER BY u.name, u.email")
 })
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email", name = "users_unique_email_idx"))
@@ -47,6 +48,8 @@ public class User extends AbstractNamedEntity {
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    // @Fetch(FetchMode.SUBSELECT)
+    @BatchSize(size = 200)
     private Set<Role> roles;
 
     @Range(min = 10, max = 10000)
