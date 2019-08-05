@@ -13,8 +13,12 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static ru.javawebinar.topjava.TimingRules.STOPWATCH;
 import static ru.javawebinar.topjava.TimingRules.SUMMARY;
+import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration({
@@ -32,4 +36,14 @@ public abstract class AbstractServiceTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
+    // Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
+    public <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> exceptionClass) {
+        try {
+            runnable.run();
+            fail("Expected " + exceptionClass.getName());
+        } catch (Exception e) {
+            assertThat(getRootCause(e), instanceOf(exceptionClass));
+        }
+    }
 }
