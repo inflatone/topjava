@@ -71,6 +71,13 @@
                            value="${hibernate.use_sql_comments}"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
                     <!--<entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO}" value="${hibernate.hbm2ddl.auto}"/>-->
+
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).CACHE_REGION_FACTORY}"
+                           value="org.hibernate.cache.jcache.internal.JCacheRegionFactory"/>
+                    <entry key="#{T(org.hibernate.cache.jcache.ConfigSettings).PROVIDER}"
+                           value="org.ehcache.jsr107.EhcacheCachingProvider"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}" value="true"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_QUERY_CACHE}" value="false"/>
                 </map>
             </property>
             <property name="jpaVendorAdapter">
@@ -83,6 +90,8 @@
         <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
         <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
               p:entityManagerFactory-ref="entityManagerFactory"/>
+
+        <bean class="ru.javawebinar.topjava.repository.JpaUtil"/>
     </beans>
 
 
