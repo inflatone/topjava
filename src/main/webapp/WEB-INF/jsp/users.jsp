@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <fmt:setBundle basename="messages.app"/>
 
@@ -15,11 +16,11 @@
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
-            <th><fmt:message key="user.name"/></th>
-            <th><fmt:message key="user.email"/></th>
-            <th><fmt:message key="user.roles"/></th>
-            <th><fmt:message key="user.active"/></th>
-            <th><fmt:message key="user.registered"/></th>
+            <th><spring:message code="user.name"/></th>
+            <th><spring:message code="user.email"/></th>
+            <th><spring:message code="user.roles"/></th>
+            <th><spring:message code="user.active"/></th>
+            <th><spring:message code="user.registered"/></th>
         </tr>
         </thead>
         <c:forEach items="${users}" var="user">
@@ -28,7 +29,7 @@
                 <td><c:out value="${user.name}"/></td>
                 <td><a href="mailto:${user.email}">${user.email}</a></td>
                 <td>${user.roles}</td>
-                <td><%=user.isEnabled()%>></td>
+                <td><%=user.isEnabled()%></td>
                 <td><fmt:formatDate value="${user.registered}" pattern="dd-MM-yyyy"/></td>
             </tr>
         </c:forEach>
