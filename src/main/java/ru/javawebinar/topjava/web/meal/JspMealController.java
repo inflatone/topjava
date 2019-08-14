@@ -23,7 +23,7 @@ public class JspMealController extends AbstractMealController {
     @GetMapping("/delete")
     public String delete(HttpServletRequest request) {
         super.delete(getId(request));
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
     @GetMapping("/update")
@@ -48,11 +48,11 @@ public class JspMealController extends AbstractMealController {
         } else {
             super.update(meal, getId(request));
         }
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
-    @PostMapping
-    public String getBetwenn(HttpServletRequest request, Model model) {
+    @PostMapping("/filter")
+    public String getBetween(HttpServletRequest request, Model model) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
