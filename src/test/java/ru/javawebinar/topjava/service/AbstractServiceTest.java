@@ -1,61 +1,44 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.ExternalResource;
-import org.junit.rules.Stopwatch;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
+import ru.javawebinar.topjava.TimingExtension;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static ru.javawebinar.topjava.TimingRules.STOPWATCH;
-import static ru.javawebinar.topjava.TimingRules.SUMMARY;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration({
+@SpringJUnitConfig(locations = {
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"
 })
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public abstract class AbstractServiceTest {
-    @ClassRule
-    public static ExternalResource summary = SUMMARY;
-
-    @Rule
-    public Stopwatch stopwatch = STOPWATCH;
-
+@ExtendWith(TimingExtension.class)
+abstract class AbstractServiceTest {
     @Autowired
-    public Environment env;
+    private Environment env;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    public boolean isJpaBased() {
+    boolean isJpaBased() {
         // return Arrays.stream(env.getActiveProfiles()).noneMatch(Profiles.JDBC::equals);
         return env.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.JPA, Profiles.DATAJPA));
 
     }
 
     // Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
-    public <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> exceptionClass) {
-        try {
-            runnable.run();
-            fail("Expected " + exceptionClass.getName());
-        } catch (Exception e) {
-            assertThat(getRootCause(e), instanceOf(exceptionClass));
-        }
+    <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> exceptionClass) {
+        assertThrows(exceptionClass, () -> {
+            try {
+                runnable.run();
+            } catch (Exception e) {
+                throw getRootCause(e);
+            }
+        });
     }
 }

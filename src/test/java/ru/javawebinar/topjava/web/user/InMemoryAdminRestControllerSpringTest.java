@@ -1,45 +1,44 @@
 package ru.javawebinar.topjava.web.user;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.ADMIN;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration({"classpath:spring/spring-app.xml", "classpath:spring/inmemory.xml"})
-public class InMemoryAdminRestControllerSpringTest {
+
+@SpringJUnitConfig(locations = {"classpath:spring/spring-app.xml", "classpath:spring/inmemory.xml"})
+class InMemoryAdminRestControllerSpringTest {
     @Autowired
     private AdminRestController controller;
 
     @Autowired
     private InMemoryUserRepository repository;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         repository.init();
     }
 
     @Test
-    public void delete() {
+    void testDelete() {
         controller.delete(USER_ID);
         List<User> users = controller.getAll();
         assertEquals(1, users.size());
         assertEquals(ADMIN, users.iterator().next());
     }
 
-    @Test(expected = NotFoundException.class)
-    public void deleteNotFound() {
-        controller.delete(0);
+    @Test
+    void deleteNotFound() {
+        assertThrows(NotFoundException.class, () -> controller.delete(0));
     }
 }
