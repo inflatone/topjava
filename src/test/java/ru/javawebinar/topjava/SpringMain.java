@@ -24,7 +24,7 @@ public class SpringMain {
             }
             System.out.println();
             AdminRestController controller = context.getBean(AdminRestController.class);
-            controller.create(new User(null, "userName", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            controller.getAll();
             System.out.println();
 
             MealRestController mealController = context.getBean(MealRestController.class);
@@ -35,6 +35,4 @@ public class SpringMain {
             filteredMealsWithExcess.forEach(System.out::println);
         }
     }
-
-
 }
