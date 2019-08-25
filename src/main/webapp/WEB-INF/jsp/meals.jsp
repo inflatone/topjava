@@ -10,7 +10,7 @@
 
 <section>
     <h3><spring:message code="meal.title"/></h3>
-    <form method="post" action="meals/filter">
+    <form method="get" action="meals/filter">
 
         <input type="hidden" name="action" value="filter">
         <dl>
