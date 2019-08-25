@@ -28,4 +28,9 @@ public class ProfileRestController extends AbstractUserController {
     public void delete() {
         super.delete(SecurityUtil.authUserId());
     }
+
+    @GetMapping(value = "/text")
+    public String testUTF() {
+        return "Русский текст";
+    }
 }
