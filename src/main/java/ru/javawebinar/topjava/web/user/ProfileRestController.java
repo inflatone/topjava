@@ -19,7 +19,7 @@ public class ProfileRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(User user) {
+    public void update(@RequestBody User user) {
         super.update(user, SecurityUtil.authUserId());
     }
 
