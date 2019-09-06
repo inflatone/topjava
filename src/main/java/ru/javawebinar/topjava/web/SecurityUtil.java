@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.web;
 
-import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.UserUtil;
 
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
@@ -19,6 +19,6 @@ public class SecurityUtil {
     }
 
     public static int authUserCaloriesPerDay() {
-        return MealsUtil.DEFAULT_CALORIES_PER_DAY;
+        return UserUtil.DEFAULT_CALORIES_PER_DAY;
     }
 }
