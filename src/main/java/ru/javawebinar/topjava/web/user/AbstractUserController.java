@@ -5,10 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 public abstract class AbstractUserController {
@@ -37,6 +39,12 @@ public abstract class AbstractUserController {
         log.info("update {} with id={}", user, id);
         ValidationUtil.assureIdConsistent(user, id);
         service.update(user);
+    }
+
+    public void update(UserTo userTo, int id) {
+        log.info("update {} with id={}", userTo, id);
+        assureIdConsistent(userTo, id);
+        service.update(userTo);
     }
 
     public void enable(int id, boolean enabled) {
