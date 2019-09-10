@@ -12,12 +12,18 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.List;
 
+import static ru.javawebinar.topjava.TestUtil.mockAuthorize;
+import static ru.javawebinar.topjava.UserTestData.USER;
+
 public class SpringMain {
     public static void main(String[] args) {
         try (GenericXmlApplicationContext context = new GenericXmlApplicationContext ()) {
             context.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
             context.load("spring/spring-app.xml", "spring/inmemory.xml");
             context.refresh();
+
+            mockAuthorize(USER);
+
             System.out.println("bean definition names:");
             for (String name : context.getBeanDefinitionNames()) {
                 System.out.println(name);
