@@ -1,20 +1,10 @@
 package ru.javawebinar.topjava.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.util.MealsUtil;
-
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class RootController {
-    @Autowired
-    private MealService mealService;
-
     @GetMapping("/")
     public String root() {
         return "redirect:meals";
@@ -31,9 +21,7 @@ public class RootController {
     }
 
     @GetMapping("/meals")
-    public String getMeals(Model model) {
-        model.addAttribute("meals",
-                MealsUtil.getWithExcess(mealService.getAll(authUserId()), authUserCaloriesPerDay()));
+    public String getMeals() {
         return "meals";
     }
 }
