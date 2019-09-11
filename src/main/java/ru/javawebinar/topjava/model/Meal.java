@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.model;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -28,6 +29,7 @@ public class Meal extends AbstractBaseEntity {
 
     @NotNull
     @Column(name = "date_time", nullable = false)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime dateTime;
 
     @NotBlank
@@ -36,10 +38,10 @@ public class Meal extends AbstractBaseEntity {
     private String description;
 
     @Range(min = 10, max = 5000)
-    @Column(name = "calories", nullable = false)
-    private int calories;
-
     @NotNull
+    @Column(name = "calories", nullable = false)
+    private Integer calories;
+
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -87,7 +89,7 @@ public class Meal extends AbstractBaseEntity {
         this.description = description;
     }
 
-    public void setCalories(int calories) {
+    public void setCalories(Integer calories) {
         this.calories = calories;
     }
 
