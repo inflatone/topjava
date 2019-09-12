@@ -8,15 +8,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
-import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.TestUtil.readFromJson;
-import static ru.javawebinar.topjava.TestUtil.readFromJsonMvcResult;
+import static ru.javawebinar.topjava.TestUtil.*;
+import static ru.javawebinar.topjava.UserTestData.ADMIN;
+import static ru.javawebinar.topjava.UserTestData.USER;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 import static ru.javawebinar.topjava.util.MealsUtil.createWithExcess;
 import static ru.javawebinar.topjava.util.MealsUtil.getWithExcess;
@@ -29,17 +29,25 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
-                .andDo(print())
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_MEAL_ID)
+                .with(userHttpBasic(ADMIN))
+        ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(result -> assertMatch(readFromJsonMvcResult(result, Meal.class), MEAL1));
+                .andExpect(result -> assertMatch(readFromJsonMvcResult(result, Meal.class), ADMIN_MEAL1));
+    }
+
+    @Test
+    void getUnAuth() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     void delete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID))
-                .andDo(print())
+        mockMvc.perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID)
+                .with(userHttpBasic(USER))
+        ).andDo(print())
                 .andExpect(status().isNoContent());
         assertMatch(service.getAll(START_SEQ), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
     }
@@ -50,6 +58,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(USER))
         )
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -62,8 +71,8 @@ class MealRestControllerTest extends AbstractControllerTest {
         ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(created))
-        )
-                .andDo(print())
+                .with(userHttpBasic(USER))
+        ).andDo(print())
                 .andExpect(status().isCreated());
         Meal returned = readFromJson(action, Meal.class);
         created.setId(returned.getId());
@@ -73,11 +82,12 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL))
-                .andDo(print())
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(USER))
+        ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(getWithExcess(MEALS, SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(contentJson(getWithExcess(MEALS, USER.getCaloriesPerDay())));
     }
 
     @Test
@@ -86,19 +96,19 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .param("startDate", "2015-05-30")
                 .param("startTime", "07:00")
                 .param("endDate", "2015-05-31")
-
                 .param("endTime", "11:00")
-        )
-                .andDo(print())
+                .with(userHttpBasic(USER))
+        ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(contentJson(createWithExcess(MEAL4, true), createWithExcess(MEAL1, false)));
     }
 
     @Test
     void filterAll() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDate=&endTime="))
-                .andDo(print())
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDate=&endTime=")
+                .with(userHttpBasic(USER))
+        ).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(contentJson(getWithExcess(MEALS, SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(contentJson(getWithExcess(MEALS, USER.getCaloriesPerDay())));
     }
 }
