@@ -16,6 +16,8 @@ import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.*;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.validate;
+
 @Repository
 @Transactional(readOnly = true)
 public class JdbcUserRepository implements UserRepository {
@@ -40,6 +42,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
+        validate(user);
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
