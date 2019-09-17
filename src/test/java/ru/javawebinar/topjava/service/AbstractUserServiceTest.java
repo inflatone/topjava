@@ -56,7 +56,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void duplicateMailCreate() {
         assertThrows(DataAccessException.class, () -> {
-            service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", ROLE_USER));
+            service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", 2000, ROLE_USER));
         });
     }
 
@@ -114,9 +114,9 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void createWithException() {
-        validateRootCause(() -> service.create(new User(null, " ", "mail@yandex.ru", "password", ROLE_USER)), ConstraintViolationException.class);
-        validateRootCause(() -> service.create(new User(null, "User", " ", "password", ROLE_USER)), ConstraintViolationException.class);
-        validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", " ", ROLE_USER)), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new User(null, " ", "mail@yandex.ru", "password", 2000, ROLE_USER)), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new User(null, "User", " ", "password", 2000, ROLE_USER)), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", " ", 2000, ROLE_USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), emptySet())), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), emptySet())), ConstraintViolationException.class);
     }

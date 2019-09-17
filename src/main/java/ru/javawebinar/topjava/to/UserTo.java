@@ -66,6 +66,10 @@ public class UserTo extends BaseTo {
         return caloriesPerDay;
     }
 
+    public void setCaloriesPerDay(Integer caloriesPerDay) {
+        this.caloriesPerDay = caloriesPerDay;
+    }
+
     @Override
     public String toString() {
         return "UserTo{" +
