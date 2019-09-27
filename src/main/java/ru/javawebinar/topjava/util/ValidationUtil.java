@@ -58,20 +58,6 @@ public class ValidationUtil {
         return result;
     }
 
-    public static ResponseEntity<String> getErrorResponse(BindingResult result) {
-        StringJoiner joiner = new StringJoiner("<br>");
-        result.getFieldErrors().forEach(error -> {
-            String message = error.getDefaultMessage();
-            if (message != null) {
-                if (!message.startsWith(error.getField())) {
-                    message = error.getField() + ' ' + message;
-                }
-                joiner.add(message);
-            }
-        });
-        return ResponseEntity.unprocessableEntity().body(joiner.toString());
-    }
-
     private static final Validator validator;
 
     static {

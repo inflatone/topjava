@@ -7,6 +7,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +22,7 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -40,6 +44,23 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(request, e, true, DATA_ERROR);
     }
 
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
+    @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
+    public ErrorInfo bindValidationError(HttpServletRequest request, Exception e) {
+        BindingResult result = e instanceof BindException
+                ? ((BindException) e).getBindingResult()
+                : ((MethodArgumentNotValidException) e).getBindingResult();
+
+        String[] details = result.getFieldErrors().stream()
+                .map(error -> {
+                    String message = error.getDefaultMessage();
+                    return message == null ? null : (message.startsWith(error.getField()) ? message : error.getField() + ' ' + message);
+                }).filter(Objects::nonNull)
+                .toArray(String[]::new);
+        return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR, details);
+    }
+
+
     @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
     public ErrorInfo illegalRequestDataError(HttpServletRequest request, DataIntegrityViolationException e) {
@@ -52,13 +73,13 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(request, e, true, APP_ERROR);
     }
 
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType type) {
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType type, String... details) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(type + " at request " + request.getRequestURL(), rootCause);
         } else {
             log.warn("{} at request {}: {}", type, request.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(request.getRequestURL(), type, rootCause.toString());
+        return new ErrorInfo(request.getRequestURL(), type, details.length != 0 ? details : new String[]{rootCause.toString()});
     }
 }
