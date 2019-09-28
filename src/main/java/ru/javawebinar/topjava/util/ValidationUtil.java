@@ -1,14 +1,11 @@
 package ru.javawebinar.topjava.util;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.HasId;
 import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.*;
 import java.util.Set;
-import java.util.StringJoiner;
 
 public class ValidationUtil {
     private ValidationUtil() {
@@ -56,6 +53,10 @@ public class ValidationUtil {
             result = cause;
         }
         return result;
+    }
+
+    public static String getMessage(Throwable e) {
+        return e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getClass().getName();
     }
 
     private static final Validator validator;
