@@ -78,7 +78,7 @@ public class ExceptionInfoHandler {
         String[] details = result.getFieldErrors().stream()
                 .map(error -> {
                     String message = error.getDefaultMessage();
-                    return message == null ? null : (message.startsWith(error.getField()) ? message : error.getField() + ' ' + message);
+                    return message == null ? messageUtil.getMessage(error) : (message.startsWith(error.getField()) ? message : error.getField() + ' ' + message);
                 }).filter(Objects::nonNull)
                 .toArray(String[]::new);
         return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR, details);

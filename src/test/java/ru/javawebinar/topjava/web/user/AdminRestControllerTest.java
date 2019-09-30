@@ -178,7 +178,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .content(jsonWithPassword(invalid, USER.getPassword()))
                 .with(userHttpBasic(ADMIN))
         )
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL))
                 .andDo(print());
@@ -193,7 +193,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .content(jsonWithPassword(invalid, invalid.getPassword()))
                 .with(userHttpBasic(ADMIN))
         )
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL))
                 .andDo(print());

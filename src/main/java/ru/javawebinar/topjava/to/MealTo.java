@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.to;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class MealTo  extends BaseTo{
+public class MealTo extends BaseTo {
     private LocalDateTime dateTime;
 
     private String description;
