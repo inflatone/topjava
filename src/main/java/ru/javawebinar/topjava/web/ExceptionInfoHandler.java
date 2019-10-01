@@ -24,7 +24,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
@@ -76,10 +75,7 @@ public class ExceptionInfoHandler {
                 : ((MethodArgumentNotValidException) e).getBindingResult();
 
         String[] details = result.getFieldErrors().stream()
-                .map(error -> {
-                    String message = error.getDefaultMessage();
-                    return message == null ? messageUtil.getMessage(error) : (message.startsWith(error.getField()) ? message : error.getField() + ' ' + message);
-                }).filter(Objects::nonNull)
+                .map(error -> messageUtil.getMessage(error))
                 .toArray(String[]::new);
         return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR, details);
     }
@@ -97,13 +93,15 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(request, e, true, APP_ERROR);
     }
 
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType type, String... details) {
+    private ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType type, String... details) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(type + " at request " + request.getRequestURL(), rootCause);
         } else {
             log.warn("{} at request {}: {}", type, request.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(request.getRequestURL(), type, details.length != 0 ? details : new String[]{ValidationUtil.getMessage(rootCause)});
+        return new ErrorInfo(request.getRequestURL(), type,
+                messageUtil.getMessage(type.getErrorCode()),
+                details.length != 0 ? details : new String[]{ValidationUtil.getMessage(rootCause)});
     }
 }
