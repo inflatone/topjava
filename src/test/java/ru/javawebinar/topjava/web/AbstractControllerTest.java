@@ -17,7 +17,6 @@ import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.exception.ErrorType;
 
 import javax.annotation.PostConstruct;
-import java.util.Locale;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -76,7 +75,7 @@ public abstract class AbstractControllerTest {
     }
 
     private String getMessage(String code) {
-        return messageUtil.getMessage(code, Locale.ENGLISH);
+        return messageUtil.getMessage(code, MessageUtil.RU_LOCALE);
     }
 
     public ResultMatcher errorType(ErrorType type) {
