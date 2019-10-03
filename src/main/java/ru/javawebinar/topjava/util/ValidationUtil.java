@@ -1,9 +1,12 @@
 package ru.javawebinar.topjava.util;
 
+import org.slf4j.Logger;
 import ru.javawebinar.topjava.HasId;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.*;
 import java.util.Set;
 
@@ -74,5 +77,15 @@ public class ValidationUtil {
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
+    }
+
+    public static Throwable logAndGetRootCause(Logger log, HttpServletRequest request, Exception e, boolean logException, ErrorType errorType) {
+        Throwable rootCause = getRootCause(e);
+        if (logException) {
+            log.error(errorType + " at request " + request.getRequestURL(), rootCause);
+        } else {
+            log.warn("{} at request {}: {}", errorType, request.getRequestURL(), rootCause.toString());
+        }
+        return rootCause;
     }
 }

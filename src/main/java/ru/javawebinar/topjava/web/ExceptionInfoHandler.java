@@ -94,12 +94,7 @@ public class ExceptionInfoHandler {
     }
 
     private ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType type, String... details) {
-        Throwable rootCause = ValidationUtil.getRootCause(e);
-        if (logException) {
-            log.error(type + " at request " + request.getRequestURL(), rootCause);
-        } else {
-            log.warn("{} at request {}: {}", type, request.getRequestURL(), rootCause.toString());
-        }
+        Throwable rootCause = ValidationUtil.logAndGetRootCause(log, request, e, logException, type);
         return new ErrorInfo(request.getRequestURL(), type,
                 messageUtil.getMessage(type.getErrorCode()),
                 details.length != 0 ? details : new String[]{ValidationUtil.getMessage(rootCause)});
