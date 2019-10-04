@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.ErrorType;
 
@@ -38,12 +37,6 @@ public class GlobalControllerExceptionHandler {
         modelAndView.addObject("typeMessage", messageUtil.getMessage(errorType.getErrorCode()));
         modelAndView.addObject("exception", rootCause);
         modelAndView.addObject("message", ValidationUtil.getMessage(rootCause));
-
-        // Interceptor is not invoked, put userTo
-        AuthorizedUser authorizedUser = SecurityUtil.safeGet();
-        if (authorizedUser != null) {
-            modelAndView.addObject("userTo", authorizedUser.getUserTo());
-        }
         return modelAndView;
     }
 }
