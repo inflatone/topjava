@@ -10,7 +10,8 @@ public class Profiles {
 
     public static final String
             POSTGRES_DB = "postgres",
-            HSQL_DB = "hsqldb";
+            HSQL_DB = "hsqldb",
+            HEROKU = "heroku";
 
     public static String getActiveDbProfile() {
         try {

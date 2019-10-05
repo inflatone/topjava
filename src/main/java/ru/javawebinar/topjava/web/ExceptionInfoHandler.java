@@ -7,6 +7,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -17,10 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.ErrorInfo;
-import ru.javawebinar.topjava.util.exception.ErrorType;
-import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.util.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -44,11 +42,10 @@ public class ExceptionInfoHandler {
     @Autowired
     private MessageUtil messageUtil;
 
-    // http://stackoverflow.com/a/22358422/548473
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
-    public ErrorInfo handleError(HttpServletRequest request, NotFoundException e) {
-        return logAndGetErrorInfo(request, e, false, DATA_NOT_FOUND);
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorInfo> applicationError(HttpServletRequest request, ApplicationException e) {
+        ErrorInfo errorInfo = logAndGetErrorInfo(request, e, false, e.getType(), messageUtil.getMessage(e));
+        return ResponseEntity.status(e.getStatus()).body(errorInfo);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.ApplicationException;
 import ru.javawebinar.topjava.util.exception.ErrorType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,23 +21,27 @@ public class GlobalControllerExceptionHandler {
     private MessageUtil messageUtil;
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ModelAndView wrongRequest(HttpServletRequest request, NoHandlerFoundException e) throws Exception {
-        return logAndGetExceptionView(request, e, false, ErrorType.WRONG_REQUEST);
+    public ModelAndView wrongRequest(HttpServletRequest request, NoHandlerFoundException e) {
+        return logAndGetExceptionView(request, e, false, ErrorType.WRONG_REQUEST, null);
+    }
 
+    @ExceptionHandler(ApplicationException.class)
+    public ModelAndView applicationErrorHandler(HttpServletRequest request, ApplicationException e) {
+        return logAndGetExceptionView(request, e, true, e.getType(), messageUtil.getMessage(e));
     }
 
     @ExceptionHandler(Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) {
-        return logAndGetExceptionView(request, e, true, ErrorType.APP_ERROR);
+        return logAndGetExceptionView(request, e, true, ErrorType.APP_ERROR, null);
     }
 
-    private ModelAndView logAndGetExceptionView(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType) {
+    private ModelAndView logAndGetExceptionView(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType, String message) {
         Throwable rootCause = ValidationUtil.logAndGetRootCause(log, request, e, logException, errorType);
 
         ModelAndView modelAndView = new ModelAndView("exception/exception");
         modelAndView.addObject("typeMessage", messageUtil.getMessage(errorType.getErrorCode()));
         modelAndView.addObject("exception", rootCause);
-        modelAndView.addObject("message", ValidationUtil.getMessage(rootCause));
+        modelAndView.addObject("message", message != null ? message : ValidationUtil.getMessage(rootCause));
         return modelAndView;
     }
 }
