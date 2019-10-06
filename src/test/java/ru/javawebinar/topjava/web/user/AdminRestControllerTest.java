@@ -93,7 +93,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         updated.setRoles(List.of(Role.ROLE_ADMIN));
         mockMvc.perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated))
+                .content(jsonWithPassword(updated, updated.getPassword()))
                 .with(userHttpBasic(ADMIN))
         )
                 .andDo(print())
