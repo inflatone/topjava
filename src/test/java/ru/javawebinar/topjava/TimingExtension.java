@@ -12,24 +12,24 @@ public class TimingExtension
     private StopWatch stopWatch;
 
     @Override
-    public void beforeAll(ExtensionContext extensionContext) throws Exception {
+    public void beforeAll(ExtensionContext extensionContext) {
         stopWatch = new StopWatch("Execution time of " + extensionContext.getRequiredTestClass().getSimpleName());
     }
 
     @Override
-    public void beforeTestExecution(ExtensionContext extensionContext) throws Exception {
+    public void beforeTestExecution(ExtensionContext extensionContext) {
         log.info("Start stopWatch");
         stopWatch.start(extensionContext.getDisplayName());
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext extensionContext) throws Exception {
+    public void afterTestExecution(ExtensionContext extensionContext) {
         stopWatch.stop();
         log.info("stop stopWatch");
     }
 
     @Override
-    public void afterAll(ExtensionContext extensionContext) throws Exception {
+    public void afterAll(ExtensionContext extensionContext) {
         log.info('\n' + stopWatch.prettyPrint() + '\n');
     }
 }

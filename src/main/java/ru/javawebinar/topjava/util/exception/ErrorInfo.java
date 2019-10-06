@@ -12,4 +12,20 @@ public class ErrorInfo {
         this.typeMessage = typeMessage;
         this.details = details;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public ErrorType getType() {
+        return type;
+    }
+
+    public String getTypeMessage() {
+        return typeMessage;
+    }
+
+    public String[] getDetails() {
+        return details;
+    }
 }
