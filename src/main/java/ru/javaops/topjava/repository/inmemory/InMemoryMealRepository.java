@@ -1,6 +1,7 @@
-package ru.javaops.topjava.repository;
+package ru.javaops.topjava.repository.inmemory;
 
 import ru.javaops.topjava.model.Meal;
+import ru.javaops.topjava.repository.MealRepository;
 import ru.javaops.topjava.util.MealsUtil;
 
 import java.util.Collection;
@@ -8,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class InMemoryMealRepositoryImpl implements MealRepository {
+public class InMemoryMealRepository implements MealRepository {
     private Map<Integer, Meal> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
 
