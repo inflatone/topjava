@@ -4,4 +4,8 @@
 
     <bean class="ru.javaops.topjava.repository.inmemory.InMemoryUserRepository" id="inMemoryUserRepository"/>
 
+    <bean class="ru.javaops.topjava.service.UserService">
+        <property name="repository" ref="inMemoryUserRepository"/>
+    </bean>
+
 </beans>
