@@ -1,5 +1,7 @@
 package ru.javaops.topjava.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.UserRepository;
 
@@ -8,12 +10,10 @@ import java.util.List;
 import static ru.javaops.topjava.util.ValidationUtil.checkNotFound;
 import static ru.javaops.topjava.util.ValidationUtil.checkNotFoundWithId;
 
+@Service
 public class UserService {
+    @Autowired
     private UserRepository repository;
-
-    public void setRepository(UserRepository repository) {
-        this.repository = repository;
-    }
 
     public User create(User user) {
         return repository.save(user);

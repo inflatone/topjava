@@ -1,11 +1,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean class="ru.javaops.topjava.repository.inmemory.InMemoryUserRepository" id="inMemoryUserRepository"/>
+    <context:component-scan base-package="ru.javaops.**.repository"/>
 
-    <bean class="ru.javaops.topjava.service.UserService">
-        <property name="repository" ref="inMemoryUserRepository"/>
-    </bean>
+    <context:component-scan base-package="ru.javaops.**.service"/>
+
+    <context:component-scan base-package="ru.javaops.**.web"/>
 
 </beans>

@@ -1,6 +1,7 @@
 package ru.javaops.topjava.repository.inmemory;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Repository;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.UserRepository;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Repository
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = getLogger(InMemoryUserRepository.class);
 

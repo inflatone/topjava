@@ -1,6 +1,7 @@
 package ru.javaops.topjava.web.user;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
 
@@ -13,6 +14,7 @@ import static ru.javaops.topjava.util.ValidationUtil.checkNew;
 public class AbstractUserController {
     protected final Logger log = getLogger(getClass());
 
+    @Autowired
     private UserService service;
 
     public List<User> getAll() {
