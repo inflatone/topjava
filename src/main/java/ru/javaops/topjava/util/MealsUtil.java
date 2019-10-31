@@ -26,23 +26,23 @@ public class MealsUtil {
 
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
-    public static List<MealTo> getWithExcess(Collection<Meal> meals, int caloriesPerDay) {
-        return getFilteredWithExcess(meals, caloriesPerDay, meal -> true);
+    public static List<MealTo> getTOs(Collection<Meal> meals, int caloriesPerDay) {
+        return getFilteredTOs(meals, caloriesPerDay, meal -> true);
     }
 
-    public static List<MealTo> getFilteredWithExcess(Collection<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        return getFilteredWithExcess(meals, caloriesPerDay, m -> DateTimeUtil.isBetween(m.getTime(), startTime, endTime));
+    public static List<MealTo> getFilteredTOs(Collection<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        return getFilteredTOs(meals, caloriesPerDay, m -> Util.isBetweenInclusive(m.getTime(), startTime, endTime));
     }
 
-    private static List<MealTo> getFilteredWithExcess(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
+    private static List<MealTo> getFilteredTOs(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
         final Map<LocalDate, Integer> caloriesSumPerDay = meals.stream()
                 .collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
         return meals.stream().filter(filter)
-                .map(m -> createWithExcess(m, caloriesSumPerDay.get(m.getDate()) > caloriesPerDay))
+                .map(m -> createTO(m, caloriesSumPerDay.get(m.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 
-    private static MealTo createWithExcess(Meal meal, boolean excess) {
+    private static MealTo createTO(Meal meal, boolean excess) {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }

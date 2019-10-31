@@ -14,6 +14,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = getLogger(InMemoryUserRepository.class);
 
+    public static final int USER_ID = 1;
+    public static final int ADMIN_ID = 2;
+
     @Override
     public User save(User user) {
         log.info("save {}", user);
