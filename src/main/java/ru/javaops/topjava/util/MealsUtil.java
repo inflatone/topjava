@@ -1,7 +1,8 @@
 package ru.javaops.topjava.util;
 
+import org.springframework.lang.Nullable;
 import ru.javaops.topjava.model.Meal;
-import ru.javaops.topjava.model.MealTo;
+import ru.javaops.topjava.to.MealTo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class MealsUtil {
         return getFilteredTOs(meals, caloriesPerDay, meal -> true);
     }
 
-    public static List<MealTo> getFilteredTOs(Collection<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<MealTo> getFilteredTOs(Collection<Meal> meals, int caloriesPerDay, @Nullable LocalTime startTime, @Nullable LocalTime endTime) {
         return getFilteredTOs(meals, caloriesPerDay, m -> Util.isBetweenInclusive(m.getTime(), startTime, endTime));
     }
 
