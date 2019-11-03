@@ -13,6 +13,8 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.List;
 
+import static ru.javaops.topjava.UserTestData.printBeans;
+
 public class SpringMain {
     public static void main(String[] args) {
         try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
@@ -30,11 +32,5 @@ public class SpringMain {
         }
     }
 
-    private static void printBeans(ConfigurableApplicationContext springContext) {
-        System.out.println("Bean definition names: ");
-        for (String beanName : springContext.getBeanDefinitionNames()) {
-            System.out.println(' ' + beanName);
-        }
-        System.out.println();
-    }
+
 }

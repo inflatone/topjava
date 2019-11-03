@@ -10,13 +10,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static ru.javaops.topjava.UserTestData.*;
 
 @Repository
 public class InMemoryUserRepository extends InMemoryBaseRepository<User> implements UserRepository {
     private static final Logger log = getLogger(InMemoryUserRepository.class);
 
-    static final int USER_ID = 1;
-    static final int ADMIN_ID = 2;
+    public void init() {
+        storage.clear();
+        storage.put(USER_ID, USER);
+        storage.put(ADMIN_ID, ADMIN);
+    }
 
     @Override
     public User getByEmail(String email) {

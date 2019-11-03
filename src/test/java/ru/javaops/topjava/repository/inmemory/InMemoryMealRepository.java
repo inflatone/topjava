@@ -20,8 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static ru.javaops.topjava.repository.inmemory.InMemoryUserRepository.ADMIN_ID;
-import static ru.javaops.topjava.repository.inmemory.InMemoryUserRepository.USER_ID;
+import static ru.javaops.topjava.UserTestData.ADMIN_ID;
+import static ru.javaops.topjava.UserTestData.USER_ID;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
