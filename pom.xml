@@ -23,6 +23,9 @@
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
 
+        <!--    DB  -->
+        <postgresql.version>42.2.8</postgresql.version>
+
         <!--    Tests  -->
         <junit.version>4.12</junit.version>
     </properties>
@@ -72,6 +75,14 @@
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
+        <!--DB-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+
 
         <!--Web-->
         <dependency>
