@@ -43,7 +43,7 @@ public class AdminRestControllerTest {
         controller.delete(USER_ID);
         List<User> users = controller.getAll();
         assertEquals(users.size(), 1);
-        assertEquals(users.iterator().next(), ADMIN);
+        assertEquals(users.get(0), ADMIN);
     }
 
     @Test(expected = NotFoundException.class)
