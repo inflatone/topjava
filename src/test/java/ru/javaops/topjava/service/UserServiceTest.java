@@ -2,6 +2,7 @@ package ru.javaops.topjava.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +26,12 @@ import static ru.javaops.topjava.UserTestData.*;
 public class UserServiceTest {
     @Autowired
     private UserService service;
+
+    static {
+        // Only for postgres driver logging
+        // It uses java.util.logging and logged via jul-to-slf4j bridge
+        SLF4JBridgeHandler.install();
+    }
 
     @Test
     public void create() {
