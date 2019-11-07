@@ -5,6 +5,7 @@ import ru.javaops.topjava.model.AbstractBaseEntity;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,6 +18,7 @@ public class InMemoryBaseRepository<T extends AbstractBaseEntity> {
     Map<Integer, T> storage = new ConcurrentHashMap<>();
 
     public T save(T entry) {
+        Objects.requireNonNull(entry, "Entry must not be null");
         if (entry.isNew()) {
             entry.setId(counter.incrementAndGet());
             storage.put(entry.getId(), entry);

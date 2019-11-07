@@ -6,6 +6,9 @@ import static ru.javaops.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 public class SecurityUtil {
     private static int id = START_SEQ;
 
+    private SecurityUtil() {
+    }
+
     public static int authUserId() {
         return id;
     }

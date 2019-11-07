@@ -7,6 +7,7 @@ import ru.javaops.topjava.repository.UserRepository;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -24,6 +25,7 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
 
     @Override
     public User getByEmail(String email) {
+        Objects.requireNonNull(email, "email must not be null");
         log.info("getByEmail {}", email);
         return getCollection().stream()
                 .filter(u -> email.equals(u.getEmail()))
