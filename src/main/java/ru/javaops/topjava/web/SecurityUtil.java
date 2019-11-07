@@ -1,9 +1,10 @@
 package ru.javaops.topjava.web;
 
+import static ru.javaops.topjava.model.AbstractBaseEntity.START_SEQ;
 import static ru.javaops.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
 public class SecurityUtil {
-    private static int id = 1;
+    private static int id = START_SEQ;
 
     public static int authUserId() {
         return id;
