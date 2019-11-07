@@ -5,13 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.repository.MealRepository;
-import ru.javaops.topjava.util.MealsUtil;
 import ru.javaops.topjava.util.Util;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,22 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static ru.javaops.topjava.UserTestData.ADMIN_ID;
-import static ru.javaops.topjava.UserTestData.USER_ID;
-
 @Repository
 public class InMemoryMealRepository implements MealRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
 
     // userId -> (mealId-> meal)
     private Map<Integer, InMemoryBaseRepository<Meal>> repositories = new ConcurrentHashMap<>();
-
-    {
-        MealsUtil.MEALS.forEach(meal -> save(meal, USER_ID));
-
-        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510), ADMIN_ID);
-        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500), ADMIN_ID);
-    }
 
     @PostConstruct
     public void postConstruct() {
