@@ -25,10 +25,6 @@ import static ru.javaops.topjava.UserTestData.USER_ID;
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"})
 public class MealServiceTest {
-    static {
-        SLF4JBridgeHandler.install();
-    }
-
     @Autowired
     private MealService service;
 
