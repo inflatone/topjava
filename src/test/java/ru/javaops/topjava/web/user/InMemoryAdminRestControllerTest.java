@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static ru.javaops.topjava.UserTestData.*;
 
-public class AdminRestControllerTest {
+public class InMemoryAdminRestControllerTest {
     private static ConfigurableApplicationContext appContext;
     private static AdminRestController controller;
 
@@ -42,8 +42,8 @@ public class AdminRestControllerTest {
     public void delete() {
         controller.delete(USER_ID);
         List<User> users = controller.getAll();
-        assertEquals(users.size(), 1);
-        assertEquals(users.get(0), ADMIN);
+        assertEquals(1, users.size());
+        assertEquals(ADMIN, users.get(0));
     }
 
     @Test(expected = NotFoundException.class)
