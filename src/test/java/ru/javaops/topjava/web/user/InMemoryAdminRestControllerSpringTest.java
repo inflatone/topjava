@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.inmemory.InMemoryUserRepository;
 import ru.javaops.topjava.util.exeption.NotFoundException;
-import ru.javaops.topjava.web.user.AdminRestController;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ import static ru.javaops.topjava.UserTestData.ADMIN;
 import static ru.javaops.topjava.UserTestData.USER_ID;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration("classpath:spring/spring-app.xml")
+@ContextConfiguration({"classpath:spring/spring-app.xml", "classpath:spring/in-memory.xml"})
 public class InMemoryAdminRestControllerSpringTest {
     @Autowired
     private AdminRestController controller;

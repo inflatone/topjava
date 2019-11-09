@@ -17,7 +17,7 @@ import static ru.javaops.topjava.UserTestData.printBeans;
 
 public class SpringMain {
     public static void main(String[] args) {
-        try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
+        try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/in-memory.xml")) {
             printBeans(context);
             AdminRestController userController = context.getBean(AdminRestController.class);
             User user = new User(null, "userName", "email@mail.ru", "password", Role.ROLE_ADMIN);
