@@ -18,7 +18,16 @@ import static ru.javaops.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
+@NamedQueries({
+        @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
+        @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=:email"),
+        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email")
+})
 public class User extends AbstractNamedEntity {
+    public static final String DELETE = "User.delete";
+    public static final String BY_EMAIL = "User.getByEmail";
+    public static final String ALL_SORTED = "User.getAllSorted";
+
     @Email
     @NotBlank
     @Size(max = 100)
