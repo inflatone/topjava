@@ -30,9 +30,9 @@ public class UserServiceTest {
 
     @Test
     public void create() {
-        User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
-        User created = service.create(newUser);
-        Integer newId = created.getId();
+        var newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
+        var created = service.create(newUser);
+        var newId = created.getId();
         newUser.setId(newId);
         assertMatch(created, newUser);
         assertMatch(service.get(newId), newUser);
@@ -56,7 +56,7 @@ public class UserServiceTest {
 
     @Test
     public void get() {
-        User user = service.get(USER_ID);
+        var user = service.get(USER_ID);
         assertMatch(user, USER);
     }
 
@@ -67,13 +67,13 @@ public class UserServiceTest {
 
     @Test
     public void getByEmail() {
-        User user = service.getByEmail(USER.getEmail());
+        var user = service.getByEmail(USER.getEmail());
         assertMatch(user, USER);
     }
 
     @Test
     public void update() {
-        User updated = new User(USER);
+        var updated = new User(USER);
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(350);
         service.update(updated);

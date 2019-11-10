@@ -2,19 +2,16 @@ package ru.javaops.topjava.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 
 import static ru.javaops.topjava.MealTestData.*;
 import static ru.javaops.topjava.UserTestData.ADMIN_ID;
@@ -48,9 +45,9 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal newMeal = getCreated();
-        Meal created = service.create(newMeal, USER_ID);
-        Integer newId = created.getId();
+        var newMeal = getCreated();
+        var created = service.create(newMeal, USER_ID);
+        var newId = created.getId();
         newMeal.setId(newId);
         assertMatch(created, newMeal);
         assertMatch(service.get(newId, USER_ID), newMeal);
@@ -58,7 +55,7 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
+        var actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         assertMatch(actual, ADMIN_MEAL1);
     }
 
@@ -74,7 +71,7 @@ public class MealServiceTest {
 
     @Test
     public void update() {
-        Meal updated = getUpdated();
+        var updated = getUpdated();
         service.update(updated, USER_ID);
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
@@ -86,13 +83,13 @@ public class MealServiceTest {
 
     @Test
     public void getAll() {
-        List<Meal> meals = service.getAll(USER_ID);
+        var meals = service.getAll(USER_ID);
         assertMatch(meals, MEALS);
     }
 
     @Test
     public void getBetween() {
-        List<Meal> meals = service.getBetweenDates(
+        var meals = service.getBetweenDates(
                 LocalDate.of(2015, Month.MAY, 30),
                 LocalDate.of(2015, Month.MAY, 30),
                 USER_ID
