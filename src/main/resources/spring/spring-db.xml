@@ -11,7 +11,6 @@
 
     <tx:annotation-driven/>
 
-    <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
     <!--
         For postgres driver logging
         It uses java.util.logging and logged via jul-to-slf4j bridge
@@ -22,7 +21,7 @@
     </bean>
 
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
-        <jdbc:script location="classpath:db/initDB.sql"/>
+        <jdbc:script location="classpath:db/${jdbc.initLocation}"/>
         <jdbc:script location="classpath:db/populateDB.sql" encoding="utf-8"/>
     </jdbc:initialize-database>
 
@@ -33,6 +32,14 @@
         <property name="username" value="${database.username}"/>
         <property name="password" value="${database.password}"/>
     </bean>
+
+    <beans profile="postgres">
+        <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
+    </beans>
+
+    <beans profile="hsqldb">
+        <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
+    </beans>
 
     <beans profile="jdbc">
         <context:component-scan base-package="ru.javaops.**.repository.jdbc"/>
