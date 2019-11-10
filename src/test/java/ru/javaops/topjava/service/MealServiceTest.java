@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -24,14 +25,15 @@ import static ru.javaops.topjava.UserTestData.USER_ID;
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"})
+@ActiveProfiles({"hsqldb", "jdbc"})
 public class MealServiceTest {
     @Autowired
     private MealService service;
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
-        assertMatch(service.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
+        service.get(MEAL1_ID, USER_ID);
     }
 
     @Test(expected = NotFoundException.class)
@@ -48,9 +50,10 @@ public class MealServiceTest {
     public void create() {
         Meal newMeal = getCreated();
         Meal created = service.create(newMeal, USER_ID);
-        newMeal.setId(created.getId());
-        assertMatch(newMeal, created);
-        assertMatch(service.getAll(USER_ID), newMeal, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+        Integer newId = created.getId();
+        newMeal.setId(newId);
+        assertMatch(created, newMeal);
+        assertMatch(service.get(newId, USER_ID), newMeal);
     }
 
     @Test
@@ -84,7 +87,7 @@ public class MealServiceTest {
     @Test
     public void getAll() {
         List<Meal> meals = service.getAll(USER_ID);
-        assertMatch(meals, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+        assertMatch(meals, MEALS);
     }
 
     @Test
@@ -95,5 +98,10 @@ public class MealServiceTest {
                 USER_ID
         );
         assertMatch(meals, MEAL3, MEAL2, MEAL1);
+    }
+
+    @Test
+    public void getBetweenWithNullDates() {
+        assertMatch(service.getBetweenDates(null, null, USER_ID), MEALS);
     }
 }

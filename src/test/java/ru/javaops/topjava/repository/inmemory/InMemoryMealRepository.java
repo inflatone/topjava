@@ -15,12 +15,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static ru.javaops.topjava.MealTestData.MEALS;
+import static ru.javaops.topjava.UserTestData.USER_ID;
+
 @Repository
 public class InMemoryMealRepository implements MealRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
 
     // userId -> (mealId-> meal)
     private Map<Integer, InMemoryBaseRepository<Meal>> repositories = new ConcurrentHashMap<>();
+
+    {
+        InMemoryBaseRepository<Meal> userMeals = new InMemoryBaseRepository<>();
+        repositories.put(USER_ID, userMeals);
+        MEALS.forEach(meal -> userMeals.storage.put(meal.getId(), meal));
+    }
 
     @PostConstruct
     public void postConstruct() {
