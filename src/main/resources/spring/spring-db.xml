@@ -2,6 +2,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
@@ -16,11 +17,9 @@
         <property name="staticMethod" value="org.slf4j.bridge.SLF4JBridgeHandler.install"/>
     </bean>
 
-    <context:component-scan base-package="ru.javaops.**.repository.jdbc"/>
-
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
         <jdbc:script location="classpath:db/initDB.sql"/>
-        <jdbc:script location="classpath:db/populateDB.sql" encoding="utf-8" />
+        <jdbc:script location="classpath:db/populateDB.sql" encoding="utf-8"/>
     </jdbc:initialize-database>
 
     <!--no pooling-->
@@ -31,11 +30,35 @@
         <property name="password" value="${database.password}"/>
     </bean>
 
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <constructor-arg ref="dataSource"/>
-    </bean>
+    <beans profile="jdbc">
+        <context:component-scan base-package="ru.javaops.**.repository.jdbc"/>
 
-    <bean id="namedJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
-        <constructor-arg ref="jdbcTemplate"/>
-    </bean>
+        <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+            <constructor-arg ref="dataSource"/>
+        </bean>
+
+        <bean id="namedJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+            <constructor-arg ref="jdbcTemplate"/>
+        </bean>
+    </beans>
+
+    <beans profile="jpa">
+        <context:component-scan base-package="ru.javaops.**.repository.jpa"/>
+
+        <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+              p:dataSource-ref="dataSource"
+              p:packagesToScan="ru.javaops.**.model">
+            <property name="jpaPropertyMap">
+                <map>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="${hibernate.format_sql}"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}"
+                           value="${hibernate.use_sql_comments}"/>
+                    <!--<entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO}" value="${hibernate.hbm2ddl.auto}"/>-->
+                </map>
+            </property>
+            <property name="jpaVendorAdapter">
+                <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" p:showSql="${jpa.showSql}"/>
+            </property>
+        </bean>
+    </beans>
 </beans>
