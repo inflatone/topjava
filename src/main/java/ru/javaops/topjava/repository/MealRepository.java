@@ -1,9 +1,9 @@
 package ru.javaops.topjava.repository;
 
+import org.springframework.lang.Nullable;
 import ru.javaops.topjava.model.Meal;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MealRepository {
@@ -30,5 +30,5 @@ public interface MealRepository {
     /**
      * @return ORDERED dateTime desc
      */
-    List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId);
+    List<Meal> getBetweenInclusive(@Nullable LocalDate startDate, @Nullable LocalDate endDate, int userId);
 }

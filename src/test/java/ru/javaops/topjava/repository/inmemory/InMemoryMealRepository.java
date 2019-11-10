@@ -9,7 +9,7 @@ import ru.javaops.topjava.util.Util;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -67,10 +67,8 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getBetween(LocalDateTime start, LocalDateTime end, int userId) {
-        Objects.requireNonNull(start, "startDateTime must not be null");
-        Objects.requireNonNull(end, "endDateTime must not be null");
-        return getAllFiltered(userId, meal -> Util.isBetweenInclusive(meal.getDateTime(), start, end));
+    public List<Meal> getBetweenInclusive(LocalDate start, LocalDate end, int userId) {
+        return getAllFiltered(userId, meal -> Util.isBetweenInclusive(meal.getDate(), start, end));
     }
 
     private List<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {

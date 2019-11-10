@@ -27,8 +27,4 @@ public class DateTimeUtil {
     LocalTime parseLocalTime(@Nullable String line) {
         return StringUtils.isEmpty(line) ? null : LocalTime.parse(line);
     }
-
-    public static LocalDateTime createDateTime(@Nullable LocalDate date, LocalDate defaultDate, LocalTime time) {
-        return LocalDateTime.of(date != null ? date : defaultDate, time);
-    }
 }

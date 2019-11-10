@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.repository.MealRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +32,7 @@ public class JpaMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
+    public List<Meal> getBetweenInclusive(LocalDate startDate, LocalDate endDate, int userId) {
         return Collections.emptyList();
     }
 }

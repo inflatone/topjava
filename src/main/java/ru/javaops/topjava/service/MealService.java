@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.repository.MealRepository;
-import ru.javaops.topjava.util.DateTimeUtil;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javaops.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -32,11 +30,7 @@ public class MealService {
     }
 
     public List<Meal> getBetweenDates(@Nullable LocalDate startDate, @Nullable LocalDate endDate, int userId) {
-        return repository.getBetween(
-                DateTimeUtil.createDateTime(startDate, LocalDate.MIN, LocalTime.MIN),
-                DateTimeUtil.createDateTime(endDate, LocalDate.MAX, LocalTime.MAX),
-                userId
-        );
+        return repository.getBetweenInclusive(startDate, endDate, userId);
     }
 
     public List<Meal> getAll(int userId) {
