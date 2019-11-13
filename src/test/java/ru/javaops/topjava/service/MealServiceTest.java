@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.javaops.topjava.Profiles;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ import static ru.javaops.topjava.UserTestData.USER_ID;
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"})
-@ActiveProfiles({"hsqldb", "jpa"})
+@ActiveProfiles({Profiles.ACTIVE_DB, Profiles.REPOSITORY_IMPLEMENTATION})
 public class MealServiceTest {
     private static final Logger log = getLogger("result");
 
