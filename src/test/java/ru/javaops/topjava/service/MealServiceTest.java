@@ -33,7 +33,7 @@ import static ru.javaops.topjava.UserTestData.USER_ID;
         "classpath:spring/spring-db.xml"})
 @ActiveProfiles({"hsqldb", "jpa"})
 public class MealServiceTest {
-    private static final Logger log = getLogger(MealServiceTest.class);
+    private static final Logger log = getLogger("result");
 
     private static StringBuilder results = new StringBuilder();
 
