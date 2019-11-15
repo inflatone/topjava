@@ -1,5 +1,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7d3cb1e7c9e94932b0b45091c9d39353)](https://www.codacy.com/app/sane5ever/topjava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sane5ever/topjava&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/sane5ever/topjava.svg?branch=master)](https://travis-ci.org/sane5ever/topjava)
+[![codecov](https://codecov.io/gh/sane5ever/topjava/branch/master/graph/badge.svg)](https://codecov.io/gh/sane5ever/topjava)
 <a href="http://topsane.herokuapp.com"> <img src="http://heroku-badge.herokuapp.com/?app=topsane" alt="Deploy"> </a>
 
 Java Enterprise Online Project 

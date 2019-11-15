@@ -26,6 +26,9 @@ branches:
 env:
   - TOPJAVA_ROOT=$TRAVIS_BUILD_DIR
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 # https://docs.travis-ci.com/user/notifications#Configuring-email-notifications
 notifications:
   email:
