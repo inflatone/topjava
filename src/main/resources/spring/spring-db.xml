@@ -11,14 +11,22 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/data/jpa https://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
 >
-
-    <tx:annotation-driven/>
-
-
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
         <jdbc:script location="classpath:db/${jdbc.initLocation}"/>
         <jdbc:script location="classpath:db/populateDB.sql" encoding="utf-8"/>
     </jdbc:initialize-database>
+
+    <beans profile="hsqldb">
+        <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
+
+        <!--no pooling-->
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+              p:driverClassName="org.hsqldb.jdbcDriver"
+              p:url="${database.url}"
+              p:username="${database.username}"
+              p:password="${database.password}"
+        />
+    </beans>
 
     <beans profile="postgres">
         <!--
@@ -37,19 +45,8 @@
               p:driverClassName="org.postgresql.Driver"
               p:url="${database.url}"
               p:username="${database.username}"
-              p:password="${database.password}"/>
-    </beans>
-
-    <beans profile="hsqldb">
-        <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
-
-        <!--no pooling-->
-        <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-            <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-            <property name="url" value="${database.url}"/>
-            <property name="username" value="${database.username}"/>
-            <property name="password" value="${database.password}"/>
-        </bean>
+              p:password="${database.password}"
+        />
     </beans>
 
     <beans profile="jdbc">
@@ -64,19 +61,12 @@
         </bean>
     </beans>
 
-    <beans profile="jpa">
-        <context:component-scan base-package="ru.javaops.**.repository.jpa"/>
-    </beans>
-
-    <beans profile="datajpa">
-        <context:component-scan base-package="ru.javaops.**.repository.datajpa"/>
-        <jpa:repositories base-package="ru.javaops.**.repository.datajpa"/>
-    </beans>
-
-    <beans profile="jpa,datajpa">
+    <beans profile="jpa, datajpa">
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
               p:dataSource-ref="dataSource"
               p:packagesToScan="ru.javaops.**.model">
+
+            <!--p:persistenceUnitName="persistenceUnit">-->
             <property name="jpaPropertyMap">
                 <map>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="${hibernate.format_sql}"/>
@@ -92,10 +82,20 @@
             </property>
         </bean>
 
+        <tx:annotation-driven/>
+
         <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
         <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
               p:entityManagerFactory-ref="entityManagerFactory"/>
     </beans>
 
+    <beans profile="jpa">
+        <context:component-scan base-package="ru.javaops.**.repository.jpa"/>
+    </beans>
+
+    <beans profile="datajpa">
+        <context:component-scan base-package="ru.javaops.**.repository.datajpa"/>
+        <jpa:repositories base-package="ru.javaops.**.repository.datajpa"/>
+    </beans>
 
 </beans>
