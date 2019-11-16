@@ -1,8 +1,11 @@
 package ru.javaops.topjava.service;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,6 +19,7 @@ import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 
 import static ru.javaops.topjava.UserTestData.*;
 
@@ -28,6 +32,14 @@ import static ru.javaops.topjava.UserTestData.*;
 public class UserServiceTest {
     @Autowired
     private UserService service;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Before
+    public void setUp() {
+        Optional.ofNullable(cacheManager.getCache("users")).ifPresent(Cache::clear);
+    }
 
     @Test
     public void create() {
