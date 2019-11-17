@@ -8,33 +8,43 @@ import ru.javaops.topjava.repository.MealRepository;
 import java.time.LocalDate;
 import java.util.List;
 
+import static ru.javaops.topjava.util.DateTimeUtil.getEndExclusive;
+import static ru.javaops.topjava.util.DateTimeUtil.getStartInclusive;
+
 @Repository
 public class JpaMealRepository implements MealRepository {
     @Autowired
     private CrudMealRepository crudMealRepository;
 
+    @Autowired
+    private CrudUserRepository crudUserRepository;
+
     @Override
     public Meal save(Meal meal, int userId) {
-        return null;
+        if (!meal.isNew() && get(meal.getId(), userId) == null) {
+            return null;
+        }
+        meal.setUser(crudUserRepository.getOne(userId));
+        return crudMealRepository.save(meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        return false;
+        return crudMealRepository.delete(id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return null;
+        return crudMealRepository.findById(id).filter(m -> m.getUser().getId() == userId).orElse(null);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return null;
+        return crudMealRepository.getAll(userId);
     }
 
     @Override
     public List<Meal> getBetweenInclusive(LocalDate startDate, LocalDate endDate, int userId) {
-        return null;
+        return crudMealRepository.getBetween(getStartInclusive(startDate), getEndExclusive(endDate), userId);
     }
 }
