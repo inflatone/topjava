@@ -23,13 +23,7 @@ import java.util.Optional;
 
 import static ru.javaops.topjava.UserTestData.*;
 
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"})
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class UserServiceTest {
+public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private UserService service;
 

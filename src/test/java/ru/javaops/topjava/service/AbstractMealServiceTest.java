@@ -1,66 +1,17 @@
 package ru.javaops.topjava.service;
 
-import org.junit.AfterClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.Stopwatch;
-import org.junit.runner.Description;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
-import ru.javaops.topjava.ActiveDbProfileResolver;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
 
-import static java.lang.String.format;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javaops.topjava.MealTestData.*;
 import static ru.javaops.topjava.UserTestData.ADMIN_ID;
 import static ru.javaops.topjava.UserTestData.USER_ID;
 
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"})
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class MealServiceTest {
-    private static final Logger log = getLogger("result");
-
-    private static StringBuilder results = new StringBuilder();
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    // http://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-bussiness-relev
-    @Rule
-    public Stopwatch stopwatch = new Stopwatch() {
-        @Override
-        protected void finished(long nanos, Description description) {
-            var result = format("\n%-25s %7d", description.getMethodName(), NANOSECONDS.toMillis(nanos));
-            results.append(result);
-            log.info(result + " ms\n");
-        }
-    };
-
-    @AfterClass
-    public static void printResults() {
-        log.info("\n---------------------------------" +
-                "\nTest                 Duration, ms" +
-                "\n---------------------------------" +
-                results +
-                "\n---------------------------------");
-    }
-
+public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Autowired
     private MealService service;
 
@@ -87,7 +38,7 @@ public class MealServiceTest {
     public void create() {
         var newMeal = getCreated();
         var created = service.create(newMeal, USER_ID);
-        var newId = created.getId();
+        int newId = created.getId();
         newMeal.setId(newId);
         assertMatch(created, newMeal);
         assertMatch(service.get(newId, USER_ID), newMeal);
