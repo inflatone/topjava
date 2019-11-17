@@ -13,16 +13,15 @@ public class Profiles {
 
     public static String getActiveDbProfile() {
         try {
-            Class.forName("org.postgresql.Driver");
-            return POSTGRES_DB;
+            Class.forName("org.hsqldb.jdbcDriver");
+            return HSQL_DB;
         } catch (ClassNotFoundException e) {
             try {
-                Class.forName("org.hsqldb.jdbcDriver");
-                return HSQL_DB;
+                Class.forName("org.postgresql.Driver");
+                return POSTGRES_DB;
             } catch (ClassNotFoundException e1) {
                 throw new IllegalStateException("Could not find DB driver");
             }
         }
     }
-
 }
