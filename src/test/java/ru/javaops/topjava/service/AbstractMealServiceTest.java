@@ -36,7 +36,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void create() {
-        var newMeal = getCreated();
+        var newMeal = createNew();
         var created = service.create(newMeal, USER_ID);
         int newId = created.getId();
         newMeal.setId(newId);
@@ -64,7 +64,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void update() {
-        var updated = getUpdated();
+        var updated = createUpdated();
         service.update(updated, USER_ID);
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
