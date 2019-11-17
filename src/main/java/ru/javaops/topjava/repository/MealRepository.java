@@ -2,6 +2,7 @@ package ru.javaops.topjava.repository;
 
 import org.springframework.lang.Nullable;
 import ru.javaops.topjava.model.Meal;
+import ru.javaops.topjava.model.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,4 +32,8 @@ public interface MealRepository {
      * @return ORDERED dateTime desc
      */
     List<Meal> getBetweenInclusive(@Nullable LocalDate startDate, @Nullable LocalDate endDate, int userId);
+
+    default Meal getWithUser(int id, int userId) {
+        throw new UnsupportedOperationException("not implemented");
+    }
 }
