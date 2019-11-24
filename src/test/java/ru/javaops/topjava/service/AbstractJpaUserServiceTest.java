@@ -1,6 +1,7 @@
 package ru.javaops.topjava.service;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.JpaUtil;
@@ -16,13 +17,14 @@ public abstract class AbstractJpaUserServiceTest extends AbstractUserServiceTest
     protected JpaUtil jpaUtil;
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         jpaUtil.clear2ndLevelHibernateCache();
     }
 
     @Test
-    public void testValidation() {
+    void testValidation() {
         testCreateValidation(new User(null, "  ", "mail@yandex.ru", "password", ROLE_USER));
         testCreateValidation(new User(null, "User", "  ", "password", ROLE_USER));
         testCreateValidation(new User(null, "User", "mail@yandex.ru", "  ", ROLE_USER));

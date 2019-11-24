@@ -1,15 +1,13 @@
 package ru.javaops.topjava.service;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.Month;
 
-import static java.time.LocalDateTime.of;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.javaops.topjava.MealTestData.*;
 import static ru.javaops.topjava.UserTestData.ADMIN_ID;
 import static ru.javaops.topjava.UserTestData.USER_ID;
@@ -19,26 +17,23 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     protected MealService service;
 
     @Test
-    public void delete() {
+    void delete() {
         service.delete(MEAL1_ID, USER_ID);
-        thrown.expect(NotFoundException.class);
-        service.get(MEAL1_ID, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
     }
 
     @Test
-    public void deleteNotOwn() {
-        thrown.expect(NotFoundException.class);
-        service.delete(MEAL1_ID, ADMIN_ID);
+    void deleteNotOwn() {
+        assertThrows(NotFoundException.class, () -> service.delete(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
-    public void deleteNotFound() {
-        thrown.expect(NotFoundException.class);
-        service.delete(0, USER_ID);
+    void deleteNotFound() {
+        assertThrows(NotFoundException.class, () -> service.delete(0, USER_ID));
     }
 
     @Test
-    public void create() {
+    void create() {
         var newMeal = createNew();
         var created = service.create(newMeal, USER_ID);
         int newId = created.getId();
@@ -48,44 +43,41 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void get() {
+    void get() {
         var actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         assertMatch(actual, ADMIN_MEAL1);
     }
 
     @Test
-    public void getNotOwn() {
-        thrown.expect(NotFoundException.class);
-        service.get(ADMIN_MEAL_ID, USER_ID);
+    void getNotOwn() {
+        assertThrows(NotFoundException.class, () -> service.get(ADMIN_MEAL_ID, USER_ID));
     }
 
     @Test
-    public void getNotFound() {
-        thrown.expect(NotFoundException.class);
-        service.get(0, USER_ID);
+    void getNotFound() {
+        assertThrows(NotFoundException.class, () -> service.get(0, USER_ID));
     }
 
     @Test
-    public void update() {
+    void update() {
         var updated = createUpdated();
         service.update(updated, USER_ID);
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
     @Test
-    public void updateNotOwn() {
-        thrown.expect(NotFoundException.class);
-        service.update(MEAL1, ADMIN_ID);
+    void updateNotOwn() {
+        assertThrows(NotFoundException.class, () -> service.update(MEAL1, ADMIN_ID));
     }
 
     @Test
-    public void getAll() {
+    void getAll() {
         var meals = service.getAll(USER_ID);
         assertMatch(meals, MEALS);
     }
 
     @Test
-    public void getBetween() {
+    void getBetween() {
         var meals = service.getBetweenDates(
                 LocalDate.of(2015, Month.MAY, 30),
                 LocalDate.of(2015, Month.MAY, 30),
@@ -95,7 +87,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void getBetweenWithNullDates() {
+    void getBetweenWithNullDates() {
         assertMatch(service.getBetweenDates(null, null, USER_ID), MEALS);
     }
 }

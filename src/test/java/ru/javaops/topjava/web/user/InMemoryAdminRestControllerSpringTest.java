@@ -1,46 +1,40 @@
 package ru.javaops.topjava.web.user;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import ru.javaops.topjava.model.User;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import ru.javaops.topjava.repository.inmemory.InMemoryUserRepository;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.javaops.topjava.UserTestData.ADMIN;
 import static ru.javaops.topjava.UserTestData.USER_ID;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration({"classpath:spring/spring-app.xml", "classpath:spring/in-memory.xml"})
-public class InMemoryAdminRestControllerSpringTest {
+@SpringJUnitWebConfig(locations = {"classpath:spring/spring-app.xml", "classpath:spring/in-memory.xml"})
+class InMemoryAdminRestControllerSpringTest {
     @Autowired
     private AdminRestController controller;
 
     @Autowired
     private InMemoryUserRepository repository;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         repository.init();
     }
 
     @Test
-    public void delete() {
+    void delete() {
         controller.delete(USER_ID);
-        List<User> users = controller.getAll();
+        var users = controller.getAll();
         assertEquals(1, users.size());
         assertEquals(ADMIN, users.get(0));
     }
 
-    @Test(expected = NotFoundException.class)
-    public void deleteNotFound() {
-        controller.delete(0);
-
+    @Test
+    void deleteNotFound() {
+        assertThrows(NotFoundException.class, () -> controller.delete(0));
     }
 }

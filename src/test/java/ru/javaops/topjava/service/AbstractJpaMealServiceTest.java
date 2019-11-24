@@ -1,6 +1,6 @@
 package ru.javaops.topjava.service;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ru.javaops.topjava.model.Meal;
 
 import javax.validation.ConstraintViolationException;
@@ -11,7 +11,7 @@ import static ru.javaops.topjava.UserTestData.USER_ID;
 
 public abstract class AbstractJpaMealServiceTest extends AbstractMealServiceTest {
     @Test
-    public void testValidation() {
+    void testValidation() {
         var dateTime = of(2015, Month.JUNE, 1, 18, 0);
         testCreateValidation(new Meal(null, dateTime, "  ", 300));
         testCreateValidation(new Meal(null, null, "description", 300));
