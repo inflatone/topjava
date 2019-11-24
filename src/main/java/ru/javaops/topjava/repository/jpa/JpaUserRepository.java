@@ -1,5 +1,6 @@
 package ru.javaops.topjava.repository.jpa;
 
+import org.hibernate.jpa.QueryHints;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import ru.javaops.topjava.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.QueryHint;
 import java.util.List;
 
 @Repository
@@ -62,6 +64,7 @@ public class JpaUserRepository implements UserRepository {
     public User getByEmail(String email) {
         List<User> result = manager.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter("email", email)
+                .setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false)
                 .getResultList();
         return DataAccessUtils.singleResult(result);
     }
