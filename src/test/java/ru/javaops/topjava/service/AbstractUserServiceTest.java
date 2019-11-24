@@ -7,13 +7,9 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import ru.javaops.topjava.model.User;
-import ru.javaops.topjava.repository.JpaUtil;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
-import javax.validation.ConstraintViolationException;
-import java.util.Date;
 import java.util.Optional;
-import java.util.Set;
 
 import static ru.javaops.topjava.UserTestData.*;
 import static ru.javaops.topjava.model.Role.ROLE_USER;
@@ -58,8 +54,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void get() {
-        var user = service.get(USER_ID);
-        assertMatch(user, USER);
+        var user = service.get(ADMIN_ID);
+        assertMatch(user, ADMIN);
     }
 
     @Test(expected = NotFoundException.class)
@@ -69,8 +65,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void getByEmail() {
-        var user = service.getByEmail(USER.getEmail());
-        assertMatch(user, USER);
+        var admin = service.getByEmail(ADMIN.getEmail());
+        assertMatch(admin, ADMIN);
     }
 
     @Test
