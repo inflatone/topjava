@@ -29,7 +29,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void create() {
         var newUser = createNew();
-        var created = service.create(newUser);
+        var created = service.create(new User(newUser));
         var newId = created.getId();
         newUser.setId(newId);
         assertMatch(created, newUser);
@@ -72,7 +72,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void update() {
         var updated = createUpdated();
-        service.update(updated);
+        service.update(new User(updated));
         assertMatch(service.get(USER_ID), updated);
     }
 
