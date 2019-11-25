@@ -20,7 +20,7 @@ import static ru.javaops.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javaops.topjava.web.SecurityUtil.authUserId;
 
 @Controller
-public class AbstractMealController {
+public abstract class AbstractMealController {
     private final Logger log = getLogger(getClass());
 
     private final MealService service;
