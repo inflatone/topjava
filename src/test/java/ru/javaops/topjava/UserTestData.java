@@ -1,6 +1,6 @@
 package ru.javaops.topjava;
 
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javaops.topjava.model.Role;
 import ru.javaops.topjava.model.User;
 
@@ -43,11 +43,11 @@ public class UserTestData {
         assertThat(actual).usingElementComparatorIgnoringFields("registered", "meals").isEqualTo(expected);
     }
 
-    public static void printBeans(ConfigurableApplicationContext springContext) {
-        System.out.println("\nBean definition names: ");
-        for (String beanName : springContext.getBeanDefinitionNames()) {
-            System.out.println(' ' + beanName);
-        }
-        System.out.println();
+    public static ResultMatcher contentJson(User... expected) {
+        return result -> assertMatch(TestUtil.readListFromJsonMvcResult(result, User.class), expected);
+    }
+
+    public static ResultMatcher contentJson(User expected) {
+        return result -> assertMatch(TestUtil.readFromJsonMvcResult(result, User.class), expected);
     }
 }

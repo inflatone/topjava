@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 
-import static ru.javaops.topjava.UserTestData.printBeans;
+import static ru.javaops.topjava.TestUtil.printBeans;
 
 public class SpringMain {
     public static void main(String[] args) {

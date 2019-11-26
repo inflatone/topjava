@@ -1,11 +1,8 @@
 package ru.javaops.topjava.web.json;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static ru.javaops.topjava.web.json.JacksonObjectMapper.getMapper;
 
@@ -34,14 +31,5 @@ public class JsonUtil {
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid write to JSON:\n'" + entity + '\'', e);
         }
-    }
-
-    public static <T> String writeIgnoreProperties(T entity, String... propertiesToIgnore) {
-        var entityAsMap = getMapper().convertValue(entity, new TypeReference<Map<String, Object>>() {
-        });
-        for (var property : propertiesToIgnore) {
-            entityAsMap.remove(property);
-        }
-        return writeValue(entityAsMap);
     }
 }
