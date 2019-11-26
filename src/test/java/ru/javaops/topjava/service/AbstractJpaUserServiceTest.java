@@ -24,15 +24,15 @@ public abstract class AbstractJpaUserServiceTest extends AbstractUserServiceTest
     }
 
     @Test
-    void testValidation() {
-        testCreateValidation(new User(null, "  ", "mail@yandex.ru", "password", ROLE_USER));
-        testCreateValidation(new User(null, "User", "  ", "password", ROLE_USER));
-        testCreateValidation(new User(null, "User", "mail@yandex.ru", "  ", ROLE_USER));
-        testCreateValidation(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of()));
-        testCreateValidation(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of()));
+    void createWithException() {
+        validateException(new User(null, "  ", "mail@yandex.ru", "password", ROLE_USER));
+        validateException(new User(null, "User", "  ", "password", ROLE_USER));
+        validateException(new User(null, "User", "mail@yandex.ru", "  ", ROLE_USER));
+        validateException(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of()));
+        validateException(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of()));
     }
 
-    private void testCreateValidation(User user) {
+    private void validateException(User user) {
         validateRootCause(() -> service.create(user), ConstraintViolationException.class);
     }
 }
