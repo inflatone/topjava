@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javaops.topjava.MealTestData;
 import ru.javaops.topjava.Profiles;
-import ru.javaops.topjava.service.AbstractJpaUserServiceTest;
+import ru.javaops.topjava.service.AbstractUserServiceTest;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,7 +13,7 @@ import static ru.javaops.topjava.MealTestData.ADMIN_MEAL2;
 import static ru.javaops.topjava.UserTestData.*;
 
 @ActiveProfiles(Profiles.DATA_JPA)
-class DataJpaUserServiceTest extends AbstractJpaUserServiceTest {
+class DataJpaUserServiceTest extends AbstractUserServiceTest {
     @Test
     void getWithMeals() {
         var user = service.getWithMeals(ADMIN_ID);

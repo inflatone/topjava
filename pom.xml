@@ -202,7 +202,7 @@
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <!-- <scope>runtime</scope>-->
+            <scope>runtime</scope>
             <version>${ehcache.version}</version>
         </dependency>
         <dependency>
