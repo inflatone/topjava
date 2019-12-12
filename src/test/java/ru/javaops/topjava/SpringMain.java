@@ -12,10 +12,7 @@ import static ru.javaops.topjava.TestUtil.printBeans;
 
 public class SpringMain {
     public static void main(String[] args) {
-        try (var context = new ClassPathXmlApplicationContext()) {
-            context.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
-            context.setConfigLocations("spring/spring-app.xml", "spring/in-memory.xml");
-            context.refresh();
+        try (var context = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/in-memory.xml")) {
             printBeans(context);
             var userController = context.getBean(AdminRestController.class);
             userController.getAll();
