@@ -22,7 +22,7 @@ import static ru.javaops.topjava.UserTestData.USER_ID;
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"})
-@ActiveProfiles({"postgres", "jdbc"})
+@ActiveProfiles({"hsqldb", "jpa"})
 public class MealServiceTest {
     @Autowired
     private MealService service;

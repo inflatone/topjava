@@ -23,7 +23,7 @@ import static ru.javaops.topjava.UserTestData.*;
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"})
-@ActiveProfiles({"hsqldb", "jdbc"})
+@ActiveProfiles({"hsqldb", "jpa"})
 public class UserServiceTest {
     @Autowired
     private UserService service;
