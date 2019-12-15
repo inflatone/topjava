@@ -11,34 +11,42 @@
 
     <tx:annotation-driven/>
 
-    <!--
-        For postgres driver logging
-        It uses java.util.logging and logged via jul-to-slf4j bridge
-        https://stackoverflow.com/a/27296470/548473
-    -->
-    <bean class="org.springframework.beans.factory.config.MethodInvokingBean">
-        <property name="staticMethod" value="org.slf4j.bridge.SLF4JBridgeHandler.install"/>
-    </bean>
 
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
         <jdbc:script location="classpath:db/${jdbc.initLocation}"/>
         <jdbc:script location="classpath:db/populateDB.sql" encoding="utf-8"/>
     </jdbc:initialize-database>
 
-    <!--no pooling-->
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="${database.url}"/>
-        <property name="username" value="${database.username}"/>
-        <property name="password" value="${database.password}"/>
-    </bean>
-
     <beans profile="postgres">
+        <!--
+       For postgres driver logging
+       It uses java.util.logging and logged via jul-to-slf4j bridge
+       https://stackoverflow.com/a/27296470/548473
+       -->
+        <bean class="org.springframework.beans.factory.config.MethodInvokingBean">
+            <property name="staticMethod" value="org.slf4j.bridge.SLF4JBridgeHandler.install"/>
+        </bean>
+
         <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
+
+        <bean id="dataSource"
+              class="org.apache.tomcat.jdbc.pool.DataSource"
+              p:driverClassName="org.postgresql.Driver"
+              p:url="${database.url}"
+              p:username="${database.username}"
+              p:password="${database.password}"/>
     </beans>
 
     <beans profile="hsqldb">
         <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
+
+        <!--no pooling-->
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+            <property name="url" value="${database.url}"/>
+            <property name="username" value="${database.username}"/>
+            <property name="password" value="${database.password}"/>
+        </bean>
     </beans>
 
     <beans profile="jdbc">
