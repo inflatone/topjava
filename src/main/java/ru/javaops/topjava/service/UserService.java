@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.UserRepository;
@@ -50,6 +51,14 @@ public class UserService {
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
         checkNotFoundWithId(repository.save(user), user.getId());
+    }
+
+    @Transactional
+    @CacheEvict(value = "users", allEntries = true)
+    public void enable(int id, boolean enabled) {
+        var user = get(id);
+        user.setEnabled(enabled);
+        repository.save(user); // !! need only for JDBC implementation
     }
 
     public User getWithMeals(int id) {
