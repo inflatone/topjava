@@ -3,6 +3,8 @@ package ru.javaops.topjava.web.user;
 import org.slf4j.Logger;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
+import ru.javaops.topjava.to.UserTo;
+import ru.javaops.topjava.util.UserUtil;
 
 import java.util.List;
 
@@ -27,6 +29,11 @@ public class AbstractUserController {
     public User get(int id) {
         log.info("get {}", id);
         return service.get(id);
+    }
+
+    public User create(UserTo userTo) {
+        log.info("create from to {}", userTo);
+        return create(UserUtil.createNewFromTo(userTo));
     }
 
     public User create(User user) {
