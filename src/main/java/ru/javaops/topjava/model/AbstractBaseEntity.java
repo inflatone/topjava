@@ -1,12 +1,13 @@
 package ru.javaops.topjava.model;
 
 import org.hibernate.Hibernate;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 
 // http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access
 @MappedSuperclass
-public class AbstractBaseEntity {
+public class AbstractBaseEntity implements Persistable<Integer> {
     public static final int START_SEQ = 100000;
 
     // See https://hibernate.atlassian.net/browse/HHH-3718 and https://hibernate.atlassian.net/browse/HHH-12034
@@ -23,6 +24,7 @@ public class AbstractBaseEntity {
         this.id = id;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -31,6 +33,7 @@ public class AbstractBaseEntity {
         this.id = id;
     }
 
+    @Override
     public boolean isNew() {
         return id == null;
     }
