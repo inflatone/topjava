@@ -1,8 +1,6 @@
 package ru.javaops.topjava.to;
 
-public class UserTo {
-    private Integer id;
-
+public class UserTo extends BaseTo {
     private String name;
 
     private String email;
@@ -13,18 +11,10 @@ public class UserTo {
     }
 
     public UserTo(Integer id, String name, String email, String password) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.email = email;
         this.password = password;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getPassword() {
@@ -49,10 +39,6 @@ public class UserTo {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public boolean isNew() {
-        return id == null;
     }
 
     @Override

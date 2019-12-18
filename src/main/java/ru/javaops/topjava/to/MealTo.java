@@ -4,9 +4,7 @@ import java.beans.ConstructorProperties;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class MealTo {
-    private final Integer id;
-
+public class MealTo extends BaseTo {
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -17,15 +15,11 @@ public class MealTo {
 
     @ConstructorProperties({"id", "dateTime", "description", "calories", "excess"})
     public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
-        this.id = id;
+        super(id);
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.excess = excess;
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public LocalDateTime getDateTime() {

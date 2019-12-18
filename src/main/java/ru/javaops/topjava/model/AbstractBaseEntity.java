@@ -1,7 +1,7 @@
 package ru.javaops.topjava.model;
 
 import org.hibernate.Hibernate;
-import org.springframework.data.domain.Persistable;
+import ru.javaops.topjava.HasId;
 
 import javax.persistence.*;
 
@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Access(AccessType.FIELD)
 @MappedSuperclass
 //@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE)
-public abstract class AbstractBaseEntity implements Persistable<Integer> {
+public abstract class AbstractBaseEntity implements HasId {
     public static final int START_SEQ = 100000;
 
     // See https://hibernate.atlassian.net/browse/HHH-3718 and https://hibernate.atlassian.net/browse/HHH-12034
@@ -32,13 +32,9 @@ public abstract class AbstractBaseEntity implements Persistable<Integer> {
         return id;
     }
 
+    @Override
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    @Override
-    public boolean isNew() {
-        return id == null;
     }
 
     @Override
