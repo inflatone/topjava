@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import ru.javaops.topjava.model.Role;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.UserRepository;
+import ru.javaops.topjava.util.ValidationUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,6 +68,8 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
+        ValidationUtil.validate(user);
+
         var parameterSource = new BeanPropertySqlParameterSource(user);
         if (user.isNew()) {
             Number newKey = userInsert.executeAndReturnKey(parameterSource);
