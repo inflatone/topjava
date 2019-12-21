@@ -6,20 +6,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.javaops.topjava.service.MealService;
-import ru.javaops.topjava.service.UserService;
 import ru.javaops.topjava.util.MealsUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class RootController {
-    private final UserService userService;
-
     private final MealService mealService;
 
     @Autowired
-    public RootController(UserService userService, MealService mealService) {
-        this.userService = userService;
+    public RootController(MealService mealService) {
         this.mealService = mealService;
     }
 
@@ -29,8 +25,7 @@ public class RootController {
     }
 
     @GetMapping("/users")
-    public String getUsers(Model model) {
-        model.addAttribute("users", userService.getAll());
+    public String getUsers() {
         return "users";
     }
 
