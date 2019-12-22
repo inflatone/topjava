@@ -1,8 +1,8 @@
 package ru.javaops.topjava.web;
 
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.StringUtils;
+import ru.javaops.topjava.Profiles;
 import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.web.meal.MealRestController;
 
@@ -23,14 +23,16 @@ import static ru.javaops.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javaops.topjava.util.DateTimeUtil.parseLocalTime;
 
 public class MealServlet extends HttpServlet {
-    private ConfigurableApplicationContext springContext;
+    private ClassPathXmlApplicationContext springContext;
 
     private MealRestController mealController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
+        springContext = new ClassPathXmlApplicationContext(new String[]{"spring/spring-app.xml", "spring/spring-db.xml"}, false);
+        springContext.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
+        springContext.refresh();
         mealController = springContext.getBean(MealRestController.class);
     }
 

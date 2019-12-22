@@ -14,7 +14,10 @@ import static ru.javaops.topjava.UserTestData.printBeans;
 
 public class SpringMain {
     public static void main(String[] args) {
-        try (var context = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/in-memory.xml")) {
+        try (var context = new ClassPathXmlApplicationContext()) {
+            context.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
+            context.setConfigLocations("spring/spring-app.xml", "spring/in-memory.xml");
+            context.refresh();
             printBeans(context);
             var userController = context.getBean(AdminRestController.class);
             var user = new User(null, "userName", "email@mail.ru", "password", Role.ROLE_ADMIN);
@@ -28,6 +31,4 @@ public class SpringMain {
             meals.forEach(System.out::println);
         }
     }
-
-
 }
