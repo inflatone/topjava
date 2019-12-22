@@ -37,7 +37,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void create() {
-        var newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
+        var newUser = createNew();
         var created = service.create(newUser);
         var newId = created.getId();
         newUser.setId(newId);
@@ -80,9 +80,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void update() {
-        var updated = new User(USER);
-        updated.setName("UpdatedName");
-        updated.setCaloriesPerDay(350);
+        var updated = createUpdated();
         service.update(updated);
         assertMatch(service.get(USER_ID), updated);
     }

@@ -12,7 +12,7 @@ import static ru.javaops.topjava.util.DateTimeUtil.getEndExclusive;
 import static ru.javaops.topjava.util.DateTimeUtil.getStartInclusive;
 
 @Repository
-public class JpaMealRepository implements MealRepository {
+public class DataJpaMealRepository implements MealRepository {
     @Autowired
     private CrudMealRepository crudMealRepository;
 
