@@ -14,6 +14,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javaops.topjava.ActiveDbProfileResolver;
 import ru.javaops.topjava.TimingRules;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static ru.javaops.topjava.util.ValidationUtil.getRootCause;
+
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ContextConfiguration({
@@ -29,4 +34,14 @@ public abstract class AbstractServiceTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
+    // Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
+    public <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> expectedClass) {
+        try {
+            runnable.run();
+            fail("Expected " + expectedClass.getName());
+        } catch (Exception e) {
+            assertThat(getRootCause(e), instanceOf(expectedClass));
+        }
+    }
 }
