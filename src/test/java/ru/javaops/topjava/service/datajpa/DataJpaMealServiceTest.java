@@ -14,20 +14,20 @@ import static ru.javaops.topjava.UserTestData.*;
 @ActiveProfiles(Profiles.DATA_JPA)
 public class DataJpaMealServiceTest extends AbstractMealServiceTest {
     @Test
-    public void testGetWithUser() {
+    public void getWithUser() {
         var meal = service.getWithUser(MEAL1_ID, USER_ID);
         assertMatch(meal, MEAL1);
         UserTestData.assertMatch(meal.getUser(), USER);
     }
 
     @Test
-    public void testGetWithUserNotFound() {
+    public void getWithUserNotFound() {
         thrown.expect(NotFoundException.class);
         service.getWithUser(0, 0);
     }
 
     @Test
-    public void testGetWithUserNotOwn() {
+    public void getWithUserNotOwn() {
         thrown.expect(NotFoundException.class);
         service.getWithUser(MEAL1_ID, ADMIN_ID);
     }
