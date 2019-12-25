@@ -3,9 +3,15 @@ package ru.javaops.topjava.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import ru.javaops.topjava.AuthorizedUser;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.UserRepository;
 import ru.javaops.topjava.to.UserTo;
@@ -16,13 +22,23 @@ import java.util.List;
 import static ru.javaops.topjava.util.ValidationUtil.checkNotFound;
 import static ru.javaops.topjava.util.ValidationUtil.checkNotFoundWithId;
 
-@Service
-public class UserService {
+@Service("userService")
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class UserService implements UserDetailsService {
     private final UserRepository repository;
 
     @Autowired
     public UserService(UserRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public AuthorizedUser loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = repository.getByEmail(email.toLowerCase());
+        if (user == null) {
+            throw new UsernameNotFoundException("User " + email + " is not found");
+        }
+        return new AuthorizedUser(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
