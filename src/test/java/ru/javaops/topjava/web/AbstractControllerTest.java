@@ -17,6 +17,7 @@ import ru.javaops.topjava.service.UserService;
 import javax.annotation.PostConstruct;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @Transactional
 @ActiveProfiles(resolver = AllActiveProfileResolver.class)
@@ -48,6 +49,7 @@ public abstract class AbstractControllerTest {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .addFilter(CHARACTER_ENCODING_FILTER)
+                .apply(springSecurity())
                 .build();
     }
 }

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javaops.topjava.TestUtil.contentTypeIsJson;
+import static ru.javaops.topjava.TestUtil.userHttpBasic;
 import static ru.javaops.topjava.UserTestData.*;
 
 class ProfileRestControllerTest extends AbstractControllerTest {
@@ -19,7 +20,9 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getProfile() throws Exception {
-        mockMvc.perform(get(REST_URL))
+        mockMvc.perform(get(REST_URL)
+                .with(userHttpBasic(USER))
+        )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(contentTypeIsJson())
@@ -27,8 +30,17 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getUnauth() throws Exception {
+        mockMvc.perform(get(REST_URL))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void deleteProfile() throws Exception {
-        mockMvc.perform(delete(REST_URL))
+        mockMvc.perform(delete(REST_URL)
+                .with(userHttpBasic(USER))
+        )
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertMatch(userService.getAll(), ADMIN);
@@ -40,6 +52,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(put(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedTo))
+                .with(userHttpBasic(USER))
         )
                 .andDo(print())
                 .andExpect(status().isNoContent());
