@@ -58,12 +58,8 @@ public class AdminUIController extends AbstractUserController {
 
     private ResponseEntity<String> composeUnprocessableEntity(BindingResult result) {
         var joiner = new StringJoiner("<br>");
-        result.getFieldErrors().forEach(e -> {
-            var message = e.getDefaultMessage();
-            if (message != null) {
-                joiner.add(message.startsWith(e.getField()) ? message : (e.getField() + ' ' + message));
-            }
-        });
+        result.getFieldErrors().forEach(e ->
+                joiner.add(String.format("[%s] %s", e.getField(), e.getDefaultMessage())));
         return ResponseEntity.unprocessableEntity().body(joiner.toString());
     }
 
