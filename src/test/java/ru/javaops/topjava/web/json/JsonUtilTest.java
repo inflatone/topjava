@@ -11,7 +11,7 @@ class JsonUtilTest {
         var json = JsonUtil.writeValue(ADMIN_MEAL1);
         System.out.println(json);
         var meal = JsonUtil.readValue(json, Meal.class);
-        assertMatch(meal, ADMIN_MEAL1);
+        MEAL_MATCHERS.assertMatch(meal, ADMIN_MEAL1);
     }
 
     @Test
@@ -19,6 +19,6 @@ class JsonUtilTest {
         var json = JsonUtil.writeValue(MEALS);
         System.out.println(json);
         var meals = JsonUtil.readValues(json, Meal.class);
-        assertMatch(meals, MEALS);
+        MEAL_MATCHERS.assertMatch(meals, MEALS);
     }
 }

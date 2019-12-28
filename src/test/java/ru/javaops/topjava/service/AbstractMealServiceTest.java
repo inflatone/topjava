@@ -8,7 +8,6 @@ import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 
 import static java.time.LocalDateTime.of;
@@ -43,14 +42,14 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         var created = service.create(newMeal, USER_ID);
         int newId = created.getId();
         newMeal.setId(newId);
-        assertMatch(created, newMeal);
-        assertMatch(service.get(newId, USER_ID), newMeal);
+        MEAL_MATCHERS.assertMatch(created, newMeal);
+        MEAL_MATCHERS.assertMatch(service.get(newId, USER_ID), newMeal);
     }
 
     @Test
     void get() {
         var actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
-        assertMatch(actual, ADMIN_MEAL1);
+        MEAL_MATCHERS.assertMatch(actual, ADMIN_MEAL1);
     }
 
     @Test
@@ -67,7 +66,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     void update() {
         var updated = createUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(MEAL1_ID, USER_ID), updated);
+        MEAL_MATCHERS.assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
     @Test
@@ -78,7 +77,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Test
     void getAll() {
         var meals = service.getAll(USER_ID);
-        assertMatch(meals, MEALS);
+        MEAL_MATCHERS.assertMatch(meals, MEALS);
     }
 
     @Test
@@ -88,12 +87,12 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
                 LocalDate.of(2015, Month.MAY, 30),
                 USER_ID
         );
-        assertMatch(meals, MEAL3, MEAL2, MEAL1);
+        MEAL_MATCHERS.assertMatch(meals, MEAL3, MEAL2, MEAL1);
     }
 
     @Test
     void getBetweenWithNullDates() {
-        assertMatch(service.getBetweenDates(null, null, USER_ID), MEALS);
+        MEAL_MATCHERS.assertMatch(service.getBetweenDates(null, null, USER_ID), MEALS);
     }
 
     @Test

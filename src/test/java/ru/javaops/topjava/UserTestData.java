@@ -1,18 +1,17 @@
 package ru.javaops.topjava;
 
-import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javaops.topjava.model.Role;
 import ru.javaops.topjava.model.User;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javaops.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
+    public static final TestMatchers<User> USER_MATCHERS = TestMatchers.useFieldsComparator(User.class, "registered", "meals");
+
     public static final int USER_ID = START_SEQ;
     public static final int ADMIN_ID = START_SEQ + 1;
 
@@ -29,25 +28,5 @@ public class UserTestData {
         updated.setCaloriesPerDay(330);
         updated.setRoles(Set.of(Role.ROLE_ADMIN));
         return updated;
-    }
-
-    public static void assertMatch(User actual, User expected) {
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered", "meals");
-    }
-
-    public static void assertMatch(Iterable<User> actual, User... expected) {
-        assertMatch(actual, List.of(expected));
-    }
-
-    public static void assertMatch(Iterable<User> actual, Iterable<User> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields("registered", "meals").isEqualTo(expected);
-    }
-
-    public static ResultMatcher contentJson(User... expected) {
-        return result -> assertMatch(TestUtil.readListFromJsonMvcResult(result, User.class), expected);
-    }
-
-    public static ResultMatcher contentJson(User expected) {
-        return result -> assertMatch(TestUtil.readFromJsonMvcResult(result, User.class), expected);
     }
 }
