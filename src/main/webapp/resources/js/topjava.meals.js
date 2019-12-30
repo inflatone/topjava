@@ -1,25 +1,31 @@
+const mealAjaxUrl = "ajax/profile/meals/";
+
 function updateFilteredTable() {
     $.ajax({
         type: "GET",
-        url: "ajax/profile/meals/filter",
+        url: mealAjaxUrl + "filter",
         data: $("#filter").serialize()
     }).done(updateTableByData);
 }
 
 function clearFilter() {
     $("#filter")[0].reset();
-    $.get("ajax/profile/meals/", updateTableByData);
+    $.get(mealAjaxUrl, updateTableByData);
 }
 
-$(function() {
+$(function () {
     makeEditable({
-        ajaxUrl: "ajax/profile/meals/",
-        datatableApi: $("#datatable").DataTable({
-            "paging": false,
-            "info": true,
+        ajaxUrl: mealAjaxUrl,
+        datatableOpts: {
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTime",
+                    "render": function (data, type, row) {
+                        if (type === "display") {
+                            return data.replace('T', ' ').substr(0, 16);
+                        }
+                        return data;
+                    }
                 },
                 {
                     "data": "description"
@@ -29,17 +35,22 @@ $(function() {
                 },
                 {
                     "defaultContent": "Edit",
-                    "orderable": false
+                    "orderable": false,
+                    "render": renderEditButton
                 },
                 {
-                    "defaultContent": "Delete",
-                    "orderable": false
+                    "defaultContent": "",
+                    "orderable": false,
+                    "render": renderDeleteButton
                 }
             ],
             "order": [
                 [0, "desc"]
-            ]
-        }),
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).attr("data-mealExcess", data.excess);
+            }
+        },
         updateTable: updateFilteredTable
     });
 });

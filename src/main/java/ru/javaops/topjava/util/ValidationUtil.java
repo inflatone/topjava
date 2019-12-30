@@ -1,5 +1,7 @@
 package ru.javaops.topjava.util;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import ru.javaops.topjava.HasId;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
@@ -8,6 +10,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ValidationUtil {
     private static final Validator validator;
@@ -69,5 +72,13 @@ public class ValidationUtil {
             result = cause;
         }
         return result;
+    }
+
+    public static ResponseEntity<String> createErrorResponse(BindingResult result) {
+        return ResponseEntity.unprocessableEntity().body(
+                result.getFieldErrors().stream()
+                .map(e -> String.format("[%s] %s", e.getField(), e.getDefaultMessage()))
+                .collect(Collectors.joining("<br>"))
+        );
     }
 }

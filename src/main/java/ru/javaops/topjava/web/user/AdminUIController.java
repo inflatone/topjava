@@ -12,7 +12,8 @@ import ru.javaops.topjava.to.UserTo;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.StringJoiner;
+
+import static ru.javaops.topjava.util.ValidationUtil.createErrorResponse;
 
 @RestController
 @RequestMapping("/ajax/admin/users")
@@ -44,7 +45,7 @@ public class AdminUIController extends AbstractUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result) {
-        return result.hasErrors() ? composeUnprocessableEntity(result) : createOrUpdate(userTo);
+        return result.hasErrors() ? createErrorResponse(result) : createOrUpdate(userTo);
     }
 
     private ResponseEntity<String> createOrUpdate(UserTo userTo) {
@@ -54,13 +55,6 @@ public class AdminUIController extends AbstractUserController {
             super.update(userTo, userTo.id());
         }
         return ResponseEntity.ok().build();
-    }
-
-    private ResponseEntity<String> composeUnprocessableEntity(BindingResult result) {
-        var joiner = new StringJoiner("<br>");
-        result.getFieldErrors().forEach(e ->
-                joiner.add(String.format("[%s] %s", e.getField(), e.getDefaultMessage())));
-        return ResponseEntity.unprocessableEntity().body(joiner.toString());
     }
 
     @Override
