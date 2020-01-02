@@ -3,7 +3,7 @@ package ru.javaops.topjava;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javaops.topjava.model.Role;
 import ru.javaops.topjava.model.User;
-import ru.javaops.topjava.web.meal.MealRestController;
+import ru.javaops.topjava.web.meal.AbstractMealController;
 import ru.javaops.topjava.web.user.AdminRestController;
 
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ public class SpringMain {
             var user = new User(null, "userName", "email@mail.ru", "password", Role.ROLE_ADMIN);
             userController.create(user);
 
-            var mealController = context.getBean(MealRestController.class);
+            var mealController = context.getBean(AbstractMealController.class);
             var meals = mealController.getBetween(
                     LocalDate.of(2015, Month.MAY, 30), LocalTime.of(7, 0),
                     LocalDate.of(2015, Month.MAY, 31), LocalTime.of(11, 0)

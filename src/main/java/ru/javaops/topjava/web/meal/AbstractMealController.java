@@ -20,13 +20,13 @@ import static ru.javaops.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javaops.topjava.web.SecurityUtil.authUserId;
 
 @Controller
-public class MealRestController {
-    private static final Logger log = getLogger(MealRestController.class);
+public class AbstractMealController {
+    private final Logger log = getLogger(getClass());
 
     private final MealService service;
 
     @Autowired
-    public MealRestController(MealService service) {
+    public AbstractMealController(MealService service) {
         this.service = service;
     }
 
