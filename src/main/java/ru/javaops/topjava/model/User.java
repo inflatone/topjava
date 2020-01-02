@@ -20,7 +20,7 @@ import static ru.javaops.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
 @NamedQueries({
         @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
-        @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=:email"),
+        @NamedQuery(name = User.BY_EMAIL, query = "SELECT DISTINCT  u FROM User u WHERE u.email=:email"),
         @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u ORDER BY u.name, u.email")
 })
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
