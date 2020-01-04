@@ -29,20 +29,20 @@ public class RootController {
     }
 
     @GetMapping("/users")
-    public String getUsers(Model model) {
+    public String users(Model model) {
         model.addAttribute("users", userService.getAll());
         return "users";
     }
 
     @PostMapping("/users")
-    public String setUser(HttpServletRequest request) {
+    public String postUsers(HttpServletRequest request) {
         int userId = Integer.parseInt(request.getParameter("userId"));
         SecurityUtil.setAuthUserId(userId);
         return "redirect:meals";
     }
 
     @GetMapping("/meals")
-    public String getMeals(HttpServletRequest request, Model model) {
+    public String meals(Model model) {
         model.addAttribute("meals", MealsUtil.getTOs(mealService.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay()));
         return "meals";
     }
