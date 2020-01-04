@@ -5,7 +5,6 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -15,10 +14,10 @@ import ru.javaops.topjava.model.Role;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.UserRepository;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional(readOnly = true)
@@ -43,11 +42,11 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
+        var parameterSource = new BeanPropertySqlParameterSource(user);
         if (user.isNew()) {
             Number newKey = userInsert.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            insertRoles(user);
+            insertRoles(user.getRoles(), user.getId());
         } else {
             if (namedParameterJdbcTemplate.update(
                     "  UPDATE users SET " +
@@ -62,11 +61,7 @@ public class JdbcUserRepository implements UserRepository {
             ) {
                 return null;
             }
-            // Simplest implementation
-            // More complicated : get user roles from DB and compare them with user.roles (assume that roles are changed rarely).
-            // If roles are changed, calculate difference in java and delete/insert them.
-            deleteRoles(user);
-            insertRoles(user);
+            updateRoles(user);
         }
         return user;
     }
@@ -75,19 +70,33 @@ public class JdbcUserRepository implements UserRepository {
     @Transactional
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
-
     }
 
     @Override
     public User get(int id) {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
-        return setRoles(DataAccessUtils.singleResult(users));
+        return jdbcTemplate.query("SELECT * FROM users LEFT OUTER JOIN user_roles r ON users.id = r.user_id WHERE id=?",
+                this::extractUser, id);
     }
 
     @Override
     public User getByEmail(String email) {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        return setRoles(DataAccessUtils.singleResult(users));
+        return jdbcTemplate.query("SELECT * FROM users LEFT OUTER JOIN user_roles r ON users.id = r.user_id WHERE email=?",
+                this::extractUser, email);
+    }
+
+    private User extractUser(ResultSet resultSet) throws SQLException {
+        var users = new ArrayList<User>();
+        var roles = new ArrayList<Role>();
+        int rowNum = 0;
+        while (resultSet.next()) {
+            users.add(ROW_MAPPER.mapRow(resultSet, rowNum++));
+            roles.add(Role.valueOf(resultSet.getString("role")));
+        }
+        var result = DataAccessUtils.singleResult(users.stream().distinct().collect(Collectors.toList()));
+        if (result != null) {
+            result.setRoles(roles);
+        }
+        return result;
     }
 
     @Override
@@ -103,37 +112,39 @@ public class JdbcUserRepository implements UserRepository {
         return users;
     }
 
-    private MapSqlParameterSource createParameterMap(User user) {
-        return new MapSqlParameterSource()
-                .addValue("id", user.getId())
-                .addValue("name", user.getName())
-                .addValue("email", user.getEmail())
-                .addValue("password", user.getPassword())
-                .addValue("registered", user.getRegistered())
-                .addValue("enabled", user.isEnabled())
-                .addValue("caloriesPerDay", user.getCaloriesPerDay());
+    // gets user roles from DB and compare them with user.roles (assume that roles are changed rarely)
+    // If roles are changed, calculate difference in java and delete/insert them
+    private void updateRoles(User user) {
+        var persisted = EnumSet.noneOf(Role.class);
+        jdbcTemplate.query("SELECT * FROM user_roles r WHERE r.user_id=?", rs -> {
+            persisted.add(Role.valueOf(rs.getString("role")));
+        }, user.getId());
+        checkRoles(user.getId(), persisted, user.getRoles());
     }
 
-    private void insertRoles(User user) {
-        var roles = user.getRoles();
+    private void checkRoles(int userId, Set<Role> persisted, Set<Role> actual) {
+        Set<Role> deleted = new HashSet<>();
+        Set<Role> added = new HashSet<>(actual);
+        persisted.forEach(r -> {
+            if (!added.remove(r)) {
+                deleted.add(r);
+            }
+        });
+        removeRoles(deleted, userId);
+        insertRoles(added, userId);
+    }
+
+    private void removeRoles(Set<Role> roles, int userId) {
+        jdbcTemplate.update("DELETE FROM user_roles r WHERE r.user_id=?", userId);
+    }
+
+    private void insertRoles(Set<Role> roles, int userId) {
         if (!CollectionUtils.isEmpty(roles)) {
             jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", roles, roles.size(),
                     (ps, role) -> {
-                        ps.setInt(1, user.getId());
+                        ps.setInt(1, userId);
                         ps.setString(2, role.name());
                     });
         }
-    }
-
-    private void deleteRoles(User user) {
-        jdbcTemplate.update("DELETE FROM user_roles r WHERE r.user_id=?", user.getId());
-    }
-
-    private User setRoles(User user) {
-        if (user != null) {
-            var roles = jdbcTemplate.queryForList("SELECT r.role FROM user_roles r WHERE r.user_id=?", Role.class, user.getId());
-            user.setRoles(roles);
-        }
-        return user;
     }
 }
