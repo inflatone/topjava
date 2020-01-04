@@ -2,8 +2,10 @@ package ru.javaops.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.data.jdbc.core.OneToManyResultSetExtractor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,13 +18,36 @@ import ru.javaops.topjava.repository.UserRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional(readOnly = true)
 public class JdbcUserRepository implements UserRepository {
-    private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
+    private static final ResultSetExtractor<List<User>> USERS_EXTRACTOR = new OneToManyResultSetExtractor<User, Role, Integer>(
+            BeanPropertyRowMapper.newInstance(User.class),
+            (rs, rowNum) -> Role.valueOf(rs.getString("role"))
+    ) {
+        @Override
+        protected Integer mapPrimaryKey(ResultSet rs) throws SQLException {
+            return rs.getInt("id");
+        }
+
+        @Override
+        protected Integer mapForeignKey(ResultSet rs) throws SQLException {
+            return rs.getInt("user_id");
+        }
+
+        @Override
+        protected void addChild(User user, Role role) {
+            if (user.getRoles() == null) {
+                user.setRoles(null);
+            }
+            user.getRoles().add(role);
+        }
+    };
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -74,42 +99,21 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User get(int id) {
-        return jdbcTemplate.query("SELECT * FROM users LEFT OUTER JOIN user_roles r ON users.id = r.user_id WHERE id=?",
-                this::extractUser, id);
+        return DataAccessUtils.singleResult(
+                jdbcTemplate.query("SELECT * FROM users LEFT OUTER JOIN user_roles r ON users.id = r.user_id WHERE id=?",
+                        USERS_EXTRACTOR, id));
     }
 
     @Override
     public User getByEmail(String email) {
-        return jdbcTemplate.query("SELECT * FROM users LEFT OUTER JOIN user_roles r ON users.id = r.user_id WHERE email=?",
-                this::extractUser, email);
-    }
-
-    private User extractUser(ResultSet resultSet) throws SQLException {
-        var users = new ArrayList<User>();
-        var roles = new ArrayList<Role>();
-        int rowNum = 0;
-        while (resultSet.next()) {
-            users.add(ROW_MAPPER.mapRow(resultSet, rowNum++));
-            roles.add(Role.valueOf(resultSet.getString("role")));
-        }
-        var result = DataAccessUtils.singleResult(users.stream().distinct().collect(Collectors.toList()));
-        if (result != null) {
-            result.setRoles(roles);
-        }
-        return result;
+        return DataAccessUtils.singleResult(
+                jdbcTemplate.query("SELECT * FROM users LEFT OUTER JOIN user_roles r ON users.id = r.user_id WHERE email=?",
+                        USERS_EXTRACTOR, email));
     }
 
     @Override
     public List<User> getAll() {
-        var roleMap = new HashMap<Integer, Set<Role>>();
-        jdbcTemplate.query("SELECT * FROM user_roles", rs -> {
-            roleMap.computeIfAbsent(
-                    rs.getInt("user_id"), userId -> EnumSet.noneOf(Role.class)
-            ).add(Role.valueOf(rs.getString("role")));
-        });
-        var users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        users.forEach(u -> u.setRoles(roleMap.get(u.getId())));
-        return users;
+        return jdbcTemplate.query("SELECT * FROM users LEFT OUTER JOIN user_roles r ON users.id = r.user_id ORDER BY name, email", USERS_EXTRACTOR);
     }
 
     // gets user roles from DB and compare them with user.roles (assume that roles are changed rarely)
