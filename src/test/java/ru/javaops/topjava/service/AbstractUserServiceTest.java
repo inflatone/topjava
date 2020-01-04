@@ -1,7 +1,8 @@
 package ru.javaops.topjava.service;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -11,6 +12,7 @@ import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.javaops.topjava.UserTestData.*;
 import static ru.javaops.topjava.model.Role.ROLE_USER;
 
@@ -21,13 +23,13 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void  setUp() {
         Optional.ofNullable(cacheManager.getCache("users")).ifPresent(Cache::clear);
     }
 
     @Test
-    public void create() {
+    void  create() {
         var newUser = createNew();
         var created = service.create(new User(newUser));
         var newId = created.getId();
@@ -36,48 +38,49 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(service.get(newId), newUser);
     }
 
-    @Test(expected = DataAccessException.class)
-    public void createDuplicateEmail() {
-        service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", ROLE_USER));
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void delete() {
-        service.delete(USER_ID);
-        service.get(USER_ID);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void deleteNotFound() {
-        service.delete(0);
+    @Test
+    void  createDuplicateEmail() {
+        assertThrows(DataAccessException.class, () ->
+                service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", ROLE_USER)));
     }
 
     @Test
-    public void get() {
+    void  delete() {
+        service.delete(USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(USER_ID));
+    }
+
+    @Test
+    void  deleteNotFound() {
+        assertThrows(NotFoundException.class, () -> service.delete(0));
+    }
+
+    @Test
+    void  get() {
         var user = service.get(ADMIN_ID);
         assertMatch(user, ADMIN);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void getNotFound() {
-        service.get(0);
+    @Test
+    void  getNotFound() {
+        assertThrows(NotFoundException.class, () -> service.get(0));
     }
 
     @Test
-    public void getByEmail() {
+    void  getByEmail() {
         var admin = service.getByEmail(ADMIN.getEmail());
         assertMatch(admin, ADMIN);
     }
 
     @Test
-    public void update() {
+    void  update() {
         var updated = createUpdated();
         service.update(new User(updated));
         assertMatch(service.get(USER_ID), updated);
     }
 
     @Test
-    public void getAll() {
+    void  getAll() {
         assertMatch(service.getAll(), ADMIN, USER);
     }
 }

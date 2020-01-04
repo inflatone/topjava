@@ -1,9 +1,9 @@
 package ru.javaops.topjava.web;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -12,9 +12,9 @@ import static ru.javaops.topjava.MealTestData.*;
 import static ru.javaops.topjava.UserTestData.USER;
 import static ru.javaops.topjava.model.AbstractBaseEntity.START_SEQ;
 
-public class RootControllerTest extends AbstractControllerTest {
+class RootControllerTest extends AbstractControllerTest {
     @Test
-    public void getUsers() throws Exception {
+    void getUsers() throws Exception {
         mockMvc.perform(get("/users"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -30,7 +30,7 @@ public class RootControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void getRoot() throws Exception {
+    void getRoot() throws Exception {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -39,7 +39,7 @@ public class RootControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void setUser() throws Exception {
+    void setUser() throws Exception {
         mockMvc.perform(post("/users")
                 .param("userId", String.valueOf(START_SEQ + 500))
         )
@@ -51,7 +51,7 @@ public class RootControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void getMeals() throws Exception {
+    void getMeals() throws Exception {
         mockMvc.perform(get("/meals"))
                 .andDo(print())
                 .andExpect(status().isOk())
