@@ -1,5 +1,6 @@
 package ru.javaops.topjava.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,6 +11,8 @@ public class RootController {
         return "redirect:meals";
     }
 
+    // @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/users")
     public String getUsers() {
         return "users";
