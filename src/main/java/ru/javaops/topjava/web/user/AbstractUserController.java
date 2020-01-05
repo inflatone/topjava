@@ -13,7 +13,7 @@ import static ru.javaops.topjava.util.ValidationUtil.checkNew;
 public class AbstractUserController {
     protected final Logger log = getLogger(getClass());
 
-    private final UserService service;
+    protected final UserService service;
 
     public AbstractUserController(UserService service) {
         this.service = service;
