@@ -1,7 +1,6 @@
 package ru.javaops.topjava.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -61,7 +60,7 @@ public class User extends AbstractNamedEntity {
     @Column(name = "calories_per_day", nullable = false, columnDefinition = "int default " + DEFAULT_CALORIES_PER_DAY)
     private int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
 
-    @JsonIgnore
+    //    @JsonIgnore
     @OrderBy("dateTime DESC")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user"/*, cascade = CascadeType.REMOVE, orphanRemoval = true */)
     private List<Meal> meals;
