@@ -72,4 +72,8 @@
         <property name="fallbackToSystemLocale" value="false"/>
     </bean>
 
+    <mvc:interceptors>
+        <bean class="ru.javaops.topjava.web.interceptor.ModelInterceptor"/>
+    </mvc:interceptors>
+
 </beans>
