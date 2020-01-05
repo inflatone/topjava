@@ -11,15 +11,15 @@ import static ru.javaops.topjava.UserTestData.USER_ID;
 
 public abstract class AbstractJpaMealServiceTest extends AbstractMealServiceTest {
     @Test
-    void testValidation() {
+    void createWithException() {
         var dateTime = of(2015, Month.JUNE, 1, 18, 0);
-        testCreateValidation(new Meal(null, dateTime, "  ", 300));
-        testCreateValidation(new Meal(null, null, "description", 300));
-        testCreateValidation(new Meal(null, dateTime, "description", 9));
-        testCreateValidation(new Meal(null, dateTime, "description", 5001));
+        validateException(new Meal(null, dateTime, "  ", 300));
+        validateException(new Meal(null, null, "description", 300));
+        validateException(new Meal(null, dateTime, "description", 9));
+        validateException(new Meal(null, dateTime, "description", 5001));
     }
 
-    private void testCreateValidation(Meal meal) {
+    private void validateException(Meal meal) {
         validateRootCause(() -> service.create(meal, USER_ID), ConstraintViolationException.class);
     }
 }

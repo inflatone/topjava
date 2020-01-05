@@ -4,11 +4,9 @@ import org.assertj.core.matcher.AssertionMatcher;
 import org.junit.jupiter.api.Test;
 import ru.javaops.topjava.UserTestData;
 import ru.javaops.topjava.model.User;
-import ru.javaops.topjava.to.MealTo;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -65,11 +63,6 @@ class RootControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
-                .andExpect(model().attribute("meals", new AssertionMatcher<List<MealTo>>() {
-                    @Override
-                    public void assertion(List<MealTo> actual) throws AssertionError {
-                        assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(getTOs(MEALS, USER.getCaloriesPerDay()));
-                    }
-                }));
+                .andExpect(model().attribute("meals", getTOs(MEALS, USER.getCaloriesPerDay())));
     }
 }
