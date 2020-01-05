@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javaops.topjava.TestUtil;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.inmemory.InMemoryUserRepository;
 import ru.javaops.topjava.util.exeption.NotFoundException;
@@ -23,7 +24,7 @@ class InMemoryAdminRestControllerTest {
     @BeforeAll
     static void beforeClass() {
         appContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/in-memory.xml");
-        printBeans(appContext);
+        TestUtil.printBeans(appContext);
         controller = appContext.getBean(AdminRestController.class);
     }
 
