@@ -8,7 +8,7 @@ public class UserUtil {
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
     public static User createNewFromTo(UserTo userTo) {
-        return new User(userTo.getId(), userTo.getName(), userTo.getEmail(), userTo.getPassword(), Role.ROLE_USER);
+        return new User(userTo.getId(), userTo.getName(), userTo.getEmail(), userTo.getPassword(), userTo.getCaloriesPerDay(), Role.ROLE_USER);
     }
 
     public static User updateFromTo(User user, UserTo userTo) {

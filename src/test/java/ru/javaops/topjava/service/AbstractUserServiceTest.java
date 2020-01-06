@@ -32,7 +32,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void createDuplicateEmail() {
         assertThrows(DataAccessException.class, () ->
-                service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", ROLE_USER)));
+                service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", 2000, ROLE_USER)));
     }
 
     @Test
@@ -85,9 +85,9 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void createWithException() {
-        validateException(new User(null, "  ", "mail@yandex.ru", "password", ROLE_USER));
-        validateException(new User(null, "User", "  ", "password", ROLE_USER));
-        validateException(new User(null, "User", "mail@yandex.ru", "  ", ROLE_USER));
+        validateException(new User(null, "  ", "mail@yandex.ru", "password", 2000, ROLE_USER));
+        validateException(new User(null, "User", "  ", "password", 2000, ROLE_USER));
+        validateException(new User(null, "User", "mail@yandex.ru", "  ", 2000, ROLE_USER));
         validateException(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of()));
         validateException(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of()));
     }
