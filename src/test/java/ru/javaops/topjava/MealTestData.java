@@ -1,12 +1,15 @@
 package ru.javaops.topjava;
 
+import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javaops.topjava.model.Meal;
+import ru.javaops.topjava.to.MealTo;
 
 import java.time.Month;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static ru.javaops.topjava.TestUtil.readListFromJsonMvcResult;
 import static ru.javaops.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
@@ -45,5 +48,11 @@ public class MealTestData {
         assertThat(actual).usingElementComparatorIgnoringFields("user").isEqualTo(expected);
     }
 
+    public static ResultMatcher contentJson(MealTo... expected) {
+        return contentJson(List.of(expected));
+    }
 
+    public static ResultMatcher contentJson(Iterable<MealTo> expected) {
+        return result -> assertThat(readListFromJsonMvcResult(result, MealTo.class)).isEqualTo(expected);
+    }
 }
