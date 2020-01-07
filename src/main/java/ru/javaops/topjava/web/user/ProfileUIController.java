@@ -2,6 +2,7 @@ package ru.javaops.topjava.web.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +36,24 @@ public class ProfileUIController extends AbstractUserController {
         super.update(userTo, authorizedUser.getId());
         authorizedUser.update(userTo);
         status.setComplete();
-        return "redirect:meals";
+        return "redirect:/meals";
+    }
+
+    @GetMapping("/register")
+    public String register(ModelMap model) {
+        model.addAttribute("userTo", new UserTo());
+        model.addAttribute("register", true);
+        return "profile";
+    }
+
+    @PostMapping("/register")
+    public String saveRegister(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
+        if (result.hasErrors()) {
+            model.addAttribute("register", true);
+            return "profile";
+        }
+        super.create(userTo);
+        status.setComplete();
+        return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
     }
 }

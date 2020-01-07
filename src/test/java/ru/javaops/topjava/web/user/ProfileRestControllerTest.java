@@ -2,15 +2,19 @@ package ru.javaops.topjava.web.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.ResultActions;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
 import ru.javaops.topjava.to.UserTo;
 import ru.javaops.topjava.util.UserUtil;
 import ru.javaops.topjava.web.AbstractControllerTest;
 
+import java.util.concurrent.ExecutionException;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javaops.topjava.TestUtil.contentTypeIsJson;
+import static ru.javaops.topjava.TestUtil.readFromJson;
 import static ru.javaops.topjava.UserTestData.*;
 
 class ProfileRestControllerTest extends AbstractControllerTest {
@@ -43,6 +47,21 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
         USER_MATCHERS.assertMatch(userService.getAll(), ADMIN);
+    }
+
+    @Test
+    void register() throws Exception {
+        var newTo = new UserTo(null, "newName", "newemail@ya.ru", "newPassword", 1500);
+        var newUser = UserUtil.createNewFromTo(newTo);
+        ResultActions action = perform(doPost("/register").jsonBody(newTo))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        var createdUser = readFromJson(action, User.class);
+        Integer newId = createdUser.getId();
+        newUser.setId(newId);
+        USER_MATCHERS.assertMatch(createdUser, newUser);
+        USER_MATCHERS.assertMatch(userService.get(newId), newUser);
     }
 
     @Test
