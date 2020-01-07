@@ -19,14 +19,14 @@ public class TimingExtension
 
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
-        log.info("Start stopwatch");
-        stopWatch.start(context.getDisplayName());
+        var testName = context.getDisplayName();
+        log.info("\nStart " + testName);
+        stopWatch.start(testName);
     }
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
         stopWatch.stop();
-        log.info("stop stopwatch");
     }
 
     @Override
