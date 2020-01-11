@@ -1,8 +1,11 @@
 package ru.javaops.topjava.util;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import ru.javaops.topjava.HasId;
+import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.util.exeption.IllegalRequestDataException;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
@@ -82,5 +85,12 @@ public class ValidationUtil {
                         .map(e -> String.format("[%s] %s", e.getField(), e.getDefaultMessage()))
                         .collect(Collectors.joining("<br>"))
         );
+    }
+
+    public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
+        String password = user.getPassword();
+        user.setPassword(StringUtils.hasText(password) ? passwordEncoder.encode(password)  : password);
+        user.setEmail(user.getEmail().toLowerCase());
+        return user;
     }
 }

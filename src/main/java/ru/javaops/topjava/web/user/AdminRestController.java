@@ -9,6 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static ru.javaops.topjava.util.ValidationUtil.checkNew;
