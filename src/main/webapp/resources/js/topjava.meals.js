@@ -1,25 +1,26 @@
-// $(document).ready(function () {
-$(function () {
+function updateFilteredTable() {
+    $.ajax({
+        type: "GET",
+        url: "ajax/profile/meals/filter",
+        data: $("#filter").serialize()
+    }).done(updateTableByData);
+}
+
+$(function() {
     makeEditable({
-        ajaxUrl: "ajax/admin/users/",
+        ajaxUrl: "ajax/profile/meals/",
         datatableApi: $("#datatable").DataTable({
             "paging": false,
             "info": true,
             "columns": [
                 {
-                    "data": "name"
+                    "data": "dateTime"
                 },
                 {
-                    "data": "email"
+                    "data": "description"
                 },
                 {
-                    "data": "roles"
-                },
-                {
-                    "data": "enabled"
-                },
-                {
-                    "data": "registered"
+                    "data": "calories"
                 },
                 {
                     "defaultContent": "Edit",
@@ -28,14 +29,12 @@ $(function () {
                 {
                     "defaultContent": "Delete",
                     "orderable": false
-                },
+                }
             ],
             "order": [
-                [0, "asc"]
+                [0, "desc"]
             ]
         }),
-        updateTable: function () {
-            $.get("ajax/admin/users/", updateTableByData);
-        }
+        updateTable: updateFilteredTable
     });
 });
