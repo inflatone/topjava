@@ -93,7 +93,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void create() throws Exception {
         var newUser = createNew();
-        var resultActions = perform(doPost().jsonBody(newUser).basicAuth(ADMIN))
+        var resultActions = perform(doPost().jsonUserWithPassword(newUser).basicAuth(ADMIN))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(contentTypeIsJson());

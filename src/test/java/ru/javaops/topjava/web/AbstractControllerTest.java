@@ -138,6 +138,11 @@ public abstract class AbstractControllerTest {
             return this;
         }
 
+        public RequestWrapper jsonUserWithPassword(User user) {
+            builder.contentType(MediaType.APPLICATION_JSON).content(JsonUtil.writeWithAdditionalProperty(user, "password", user.getPassword()));
+            return this;
+        }
+
         public RequestWrapper basicAuth(User user) {
             builder.with(httpBasic(user.getEmail(), user.getPassword()));
             return this;

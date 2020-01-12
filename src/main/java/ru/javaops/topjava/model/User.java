@@ -1,5 +1,6 @@
 package ru.javaops.topjava.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -13,6 +14,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
 
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 import static ru.javaops.topjava.util.UserUtil.DEFAULT_CALORIES_PER_DAY;
 
 @Entity
@@ -37,6 +40,7 @@ public class User extends AbstractNamedEntity {
     @NotBlank
     @Size(min = 5, max = 100)
     @Column(name = "password", nullable = false)
+    @JsonProperty(access = WRITE_ONLY) // https://stackoverflow.com/a/12505165/548473
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
@@ -44,6 +48,7 @@ public class User extends AbstractNamedEntity {
 
     @NotNull
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
+    @JsonProperty(access = READ_ONLY)
     private Date registered = new Date();
 
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
