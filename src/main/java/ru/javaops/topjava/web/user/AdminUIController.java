@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.javaops.topjava.model.Role;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
+import ru.javaops.topjava.to.UserTo;
 
 import java.util.List;
 
@@ -33,14 +33,9 @@ public class AdminUIController extends AbstractUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createOrUpdate(@RequestParam Integer id,
-                               @RequestParam String name,
-                               @RequestParam String email,
-                               @RequestParam String password
-    ) {
-        User user = new User(id, name, email, password, Role.ROLE_USER);
-        if (user.isNew()) {
-            super.create(user);
+    public void createOrUpdate(UserTo userTo) {
+        if (userTo.isNew()) {
+            super.create(userTo);
         }
     }
 
