@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
+import ru.javaops.topjava.to.UserTo;
 
 import static ru.javaops.topjava.web.SecurityUtil.authUserId;
 
@@ -32,8 +33,8 @@ public class ProfileRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user) {
-        super.update(user, authUserId());
+    public void update(@RequestBody UserTo userTo) {
+        super.update(userTo, authUserId());
     }
 
     @GetMapping("/text")
