@@ -7,13 +7,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import ru.javaops.topjava.MealTestData;
 import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.service.MealService;
+import ru.javaops.topjava.util.exeption.ErrorType;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 import ru.javaops.topjava.web.AbstractControllerTest;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javaops.topjava.MealTestData.*;
 import static ru.javaops.topjava.TestUtil.readFromJson;
 import static ru.javaops.topjava.TestUtil.readFromJsonMvcResult;
@@ -76,6 +76,15 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void updateInvalid() throws Exception {
+        var invalid = new Meal(MEAL1_ID, null, null, 6000);
+        perform(doPut(MEAL1_ID).jsonBody(invalid).basicAuth(USER))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         Meal newMeal = MealTestData.createNew();
         ResultActions action = perform(doPost().jsonBody(newMeal).basicAuth(USER));
@@ -84,6 +93,15 @@ class MealRestControllerTest extends AbstractControllerTest {
         newMeal.setId(newId);
         MEAL_MATCHERS.assertMatch(created, newMeal);
         MEAL_MATCHERS.assertMatch(mealService.get(newId, USER_ID), newMeal);
+    }
+
+    @Test
+    void createInvalid() throws Exception {
+        var invalid = new Meal(null, null, "Dummy", 200);
+        perform(doPost().jsonBody(invalid).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
     }
 
     @Test

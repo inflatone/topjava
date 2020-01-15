@@ -3,12 +3,15 @@ package ru.javaops.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import ru.javaops.topjava.model.Role;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
+import ru.javaops.topjava.util.exeption.ErrorType;
 import ru.javaops.topjava.web.AbstractControllerTest;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javaops.topjava.TestUtil.contentTypeIsJson;
 import static ru.javaops.topjava.TestUtil.readFromJson;
@@ -105,12 +108,31 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void createInvalid() throws Exception {
+        var invalid = new User(null, null, "", "newPass", 7300, Role.ROLE_USER, Role.ROLE_ADMIN);
+        perform(doPost().jsonBody(invalid).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+    }
+
+    @Test
     void update() throws Exception {
         var updated = createUpdated();
-        perform(doPut(USER_ID).jsonBody(updated).basicAuth(ADMIN))
+        perform(doPut(USER_ID).jsonUserWithPassword(updated).basicAuth(ADMIN))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         USER_MATCHERS.assertMatch(userService.getAll(), ADMIN, updated);
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        var invalid = new User(USER);
+        invalid.setName(null);
+        perform(doPut(USER_ID).jsonBody(invalid).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
     }
 
     @Test
