@@ -3,7 +3,29 @@ package ru.javaops.topjava.util;
 import ru.javaops.topjava.HasId;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.util.Set;
+
 public class ValidationUtil {
+    private static final Validator validator;
+
+    static {
+        // From Javadoc: implementations are thread-safe and instances are typically cached and reused
+        var validatorFactory = Validation.buildDefaultValidatorFactory();
+        // From Javadoc: implementations of this interface must be thread-safe
+        validator = validatorFactory.getValidator();
+    }
+
+    public static <T> void validate(T bean) {
+        Set<ConstraintViolation<T>> violations = validator.validate(bean);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+    }
+
     public static <T> T checkNotFoundWithId(T object, int id) {
         return checkNotFound(object, "id=" + id);
     }

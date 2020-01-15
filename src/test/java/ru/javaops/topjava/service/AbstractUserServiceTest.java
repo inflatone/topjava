@@ -85,7 +85,6 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void createWithException() {
-        Assumptions.assumeTrue(isJpaBased(), "Validation not supported (JPA only)");
         validateException(new User(null, "  ", "mail@yandex.ru", "password", ROLE_USER));
         validateException(new User(null, "User", "  ", "password", ROLE_USER));
         validateException(new User(null, "User", "mail@yandex.ru", "  ", ROLE_USER));
