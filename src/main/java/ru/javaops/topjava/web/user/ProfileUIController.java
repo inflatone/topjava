@@ -1,6 +1,7 @@
 package ru.javaops.topjava.web.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -29,14 +30,21 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping
     public String updateProfile(@Valid UserTo userTo, BindingResult result, SessionStatus status) {
-        if (result.hasErrors()) {
-            return "profile";
+        return result.hasErrors() || !update(userTo, result, status) ? "profile" : "redirect:meals";
+    }
+
+    private boolean update(UserTo userTo, BindingResult result, SessionStatus status) {
+        try {
+            var authorizedUser = SecurityUtil.get();
+            super.update(userTo, authorizedUser.getId());
+            authorizedUser.update(userTo);
+            status.setComplete();
+            return true;
+        } catch (DataIntegrityViolationException e) {
+            result.rejectValue("email", EXCEPTION_DUPLICATE_EMAIL);
+            return false;
         }
-        var authorizedUser = SecurityUtil.get();
-        super.update(userTo, authorizedUser.getId());
-        authorizedUser.update(userTo);
-        status.setComplete();
-        return "redirect:/meals";
+
     }
 
     @GetMapping("/register")
@@ -48,12 +56,21 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping("/register")
     public String saveRegister(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !save(userTo, result, status)) {
             model.addAttribute("register", true);
             return "profile";
         }
-        super.create(userTo);
-        status.setComplete();
         return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
+    }
+
+    private boolean save(UserTo userTo, BindingResult result, SessionStatus status) {
+        try {
+            super.create(userTo);
+            status.setComplete();
+            return true;
+        } catch (DataIntegrityViolationException e) {
+            result.rejectValue("email", EXCEPTION_DUPLICATE_EMAIL);
+            return false;
+        }
     }
 }

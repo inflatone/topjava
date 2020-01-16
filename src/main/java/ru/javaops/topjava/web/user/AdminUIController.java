@@ -1,12 +1,16 @@
 package ru.javaops.topjava.web.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
 import ru.javaops.topjava.to.UserTo;
+import ru.javaops.topjava.util.exeption.IllegalRequestDataException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,6 +22,9 @@ public class AdminUIController extends AbstractUserController {
     public AdminUIController(UserService service) {
         super(service);
     }
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,6 +48,15 @@ public class AdminUIController extends AbstractUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createOrUpdate(@Valid UserTo userTo) {
+        try {
+            createOrUpdate0(userTo);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalRequestDataException(
+                    messageSource.getMessage(EXCEPTION_DUPLICATE_EMAIL, null, LocaleContextHolder.getLocale()));
+        }
+    }
+
+    private void createOrUpdate0(UserTo userTo) {
         if (userTo.isNew()) {
             super.create(userTo);
         } else {

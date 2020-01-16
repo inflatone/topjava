@@ -78,10 +78,9 @@ public class ValidationUtil {
         return result;
     }
 
-    public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
-        String password = user.getPassword();
-        user.setPassword(StringUtils.hasText(password) ? passwordEncoder.encode(password)  : password);
-        user.setEmail(user.getEmail().toLowerCase());
-        return user;
+    public static String getMessage(Throwable e) {
+        var localizedMessage = e.getLocalizedMessage();
+        return localizedMessage != null ? localizedMessage : e.getClass().getName();
     }
+
 }
