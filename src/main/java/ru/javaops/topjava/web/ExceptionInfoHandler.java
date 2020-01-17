@@ -1,6 +1,7 @@
 package ru.javaops.topjava.web;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -19,10 +20,24 @@ import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Map;
+import java.util.Optional;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 @RestControllerAdvice(annotations = RestController.class)
 public class ExceptionInfoHandler {
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
+    public static final String EXCEPTION_DUPLICATE_DATETIME = "exception.meal.duplicateDateTime";
+
+    private static final Map<String, String> CONSTRAINS_I18N_MAP = Map.of(
+            "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
+            "meals_unique_user_datetime_idx", EXCEPTION_DUPLICATE_DATETIME
+    );
+
+    @Autowired
+    private MessageUtil messageUtil;
+
     private static Logger log = getLogger(ExceptionInfoHandler.class);
 
     // http://stackoverflow.com/a/22358422/548473
@@ -35,6 +50,17 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT) // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest request, DataIntegrityViolationException e) {
+        String rootMessage = ValidationUtil.getRootCause(e).getMessage();
+        if (rootMessage != null) {
+            String lowerCaseRootMessage = rootMessage.toLowerCase();
+            Optional<Map.Entry<String, String>> messageOnConstrains = CONSTRAINS_I18N_MAP.entrySet().stream()
+                    .filter(entry -> lowerCaseRootMessage.contains(entry.getKey()))
+                    .findAny();
+            if (messageOnConstrains.isPresent()) {
+                return logAndGetErrorInfo(request, e, false, ErrorType.VALIDATION_ERROR,
+                        messageUtil.getMessage(messageOnConstrains.get().getValue()));
+            }
+        }
         return logAndGetErrorInfo(request, e, true, ErrorType.DATA_ERROR);
     }
 

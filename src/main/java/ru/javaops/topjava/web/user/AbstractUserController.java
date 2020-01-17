@@ -15,8 +15,6 @@ import static ru.javaops.topjava.util.ValidationUtil.checkNew;
 public class AbstractUserController {
     protected final Logger log = getLogger(getClass());
 
-    public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
-
     protected final UserService service;
 
     public AbstractUserController(UserService service) {
