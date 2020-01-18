@@ -20,8 +20,8 @@ public class AdminRestController extends AbstractUserController {
     public static final String REST_URL = "/rest/admin/users";
 
     @Autowired
-    public AdminRestController(UserService service) {
-        super(service);
+    public AdminRestController(UserService service, UniqueMailValidator mailValidator) {
+        super(service, mailValidator);
     }
 
     @Override

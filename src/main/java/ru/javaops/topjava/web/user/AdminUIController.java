@@ -15,8 +15,8 @@ import java.util.List;
 @RequestMapping("/ajax/admin/users")
 public class AdminUIController extends AbstractUserController {
     @Autowired
-    public AdminUIController(UserService service) {
-        super(service);
+    public AdminUIController(UserService service, UniqueMailValidator mailValidator) {
+        super(service, mailValidator);
     }
 
     @Override

@@ -20,8 +20,8 @@ public class ProfileRestController extends AbstractUserController {
     public static final String REST_URL = "/rest/profile";
 
     @Autowired
-    public ProfileRestController(UserService service) {
-        super(service);
+    public ProfileRestController(UserService service, UniqueMailValidator mailValidator) {
+        super(service, mailValidator);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
