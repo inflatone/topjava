@@ -9,7 +9,7 @@ function enable(checkbox, id) {
         data: "enabled=" + enabled
     }).done(function () {
         checkbox.closest("tr").attr("data-userEnabled", enabled);
-        successNoty(enabled ? "Enabled" : "Disabled");
+        successNoty(enabled ? "common.enabled" : "common.disabled");
     }).fail(function () {
         $(checkbox).prop("checked", !enabled);
     });
