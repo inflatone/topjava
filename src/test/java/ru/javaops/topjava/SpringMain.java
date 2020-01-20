@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 
+import static ru.javaops.topjava.TestUtil.mockAuthorize;
 import static ru.javaops.topjava.TestUtil.printBeans;
+import static ru.javaops.topjava.UserTestData.USER;
 
 public class SpringMain {
     public static void main(String[] args) {
@@ -16,6 +18,8 @@ public class SpringMain {
             printBeans(context);
             var userController = context.getBean(AdminRestController.class);
             userController.getAll();
+
+            mockAuthorize(USER);
 
             var mealController = context.getBean(MealRestController.class);
             var meals = mealController.getBetween(
