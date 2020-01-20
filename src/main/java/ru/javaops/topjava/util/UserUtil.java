@@ -15,6 +15,11 @@ public class UserUtil {
         user.setName(userTo.getName());
         user.setEmail(userTo.getEmail());
         user.setPassword(userTo.getPassword());
+        user.setCaloriesPerDay(userTo.getCaloriesPerDay());
         return user;
+    }
+
+    public static UserTo asTo(User user) {
+        return new UserTo(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getCaloriesPerDay());
     }
 }

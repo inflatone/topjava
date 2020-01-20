@@ -32,19 +32,6 @@ class RootControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void setUser() throws Exception {
-        mockMvc.perform(post("/users")
-                .param("userId", String.valueOf(START_SEQ + 500))
-        )
-                .andDo(print())
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:meals"))
-                .andExpect(redirectedUrl("meals"));
-        assertEquals(SecurityUtil.authUserId(), START_SEQ + 500);
-        SecurityUtil.setAuthUserId(START_SEQ);
-    }
-
-    @Test
     void getMeals() throws Exception {
         mockMvc.perform(get("/meals"))
                 .andDo(print())
