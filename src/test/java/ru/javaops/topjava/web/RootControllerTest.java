@@ -2,21 +2,22 @@ package ru.javaops.topjava.web;
 
 import org.junit.jupiter.api.Test;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javaops.topjava.MealTestData.MEALS;
-import static ru.javaops.topjava.TestUtil.userAuth;
 import static ru.javaops.topjava.UserTestData.ADMIN;
 import static ru.javaops.topjava.UserTestData.USER;
 import static ru.javaops.topjava.util.MealsUtil.getTOs;
 
 class RootControllerTest extends AbstractControllerTest {
+
+    RootControllerTest() {
+        super("");
+    }
+
     @Test
     void getUsers() throws Exception {
-        mockMvc.perform(get("/users")
-                .with(userAuth(ADMIN))
-        )
+        perform(doGet("users").auth(ADMIN))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"))
@@ -25,7 +26,7 @@ class RootControllerTest extends AbstractControllerTest {
 
     @Test
     void unauth() throws Exception {
-        mockMvc.perform(get("/users"))
+        perform(doGet("users"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("http://localhost/login"));
@@ -33,9 +34,7 @@ class RootControllerTest extends AbstractControllerTest {
 
     @Test
     void getRoot() throws Exception {
-        mockMvc.perform(get("/")
-                .with(userAuth(USER))
-        )
+        perform(doGet().auth(USER))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("meals"));
@@ -43,9 +42,7 @@ class RootControllerTest extends AbstractControllerTest {
 
     @Test
     void getMeals() throws Exception {
-        mockMvc.perform(get("/meals")
-                .with(userAuth(USER))
-        )
+        perform(doGet("meals").auth(USER))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))

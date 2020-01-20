@@ -1,9 +1,9 @@
 package ru.javaops.topjava.service;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
@@ -25,8 +25,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         var created = service.create(new User(newUser));
         var newId = created.getId();
         newUser.setId(newId);
-        assertMatch(created, newUser);
-        assertMatch(service.get(newId), newUser);
+        USER_MATCHERS.assertMatch(created, newUser);
+        USER_MATCHERS.assertMatch(service.get(newId), newUser);
     }
 
     @Test
@@ -49,7 +49,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void get() {
         var user = service.get(ADMIN_ID);
-        assertMatch(user, ADMIN);
+        USER_MATCHERS.assertMatch(user, ADMIN);
     }
 
     @Test
@@ -60,14 +60,14 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void getByEmail() {
         var admin = service.getByEmail(ADMIN.getEmail());
-        assertMatch(admin, ADMIN);
+        USER_MATCHERS.assertMatch(admin, ADMIN);
     }
 
     @Test
     void update() {
         var updated = createUpdated();
         service.update(new User(updated));
-        assertMatch(service.get(USER_ID), updated);
+        USER_MATCHERS.assertMatch(service.get(USER_ID), updated);
     }
 
     @Test
@@ -80,7 +80,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void getAll() {
-        assertMatch(service.getAll(), ADMIN, USER);
+        USER_MATCHERS.assertMatch(service.getAll(), ADMIN, USER);
     }
 
     @Test
