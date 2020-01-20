@@ -11,7 +11,7 @@
     <div class="container text-center">
         <br>
         <h4 class="my-3">${param.status}</h4>
-        <h2><spring:message code="common.appError"/></h2>
+        <h2>${typeMessage}</h2>
         <h4 class="my-5">${param.message}</h4>
     </div>
 </div>
