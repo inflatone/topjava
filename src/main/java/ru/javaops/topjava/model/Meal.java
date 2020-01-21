@@ -3,7 +3,9 @@ package ru.javaops.topjava.model;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.format.annotation.DateTimeFormat;
+import ru.javaops.topjava.View;
 import ru.javaops.topjava.View.Persist;
 import ru.javaops.topjava.util.DateTimeUtil;
 
@@ -37,6 +39,7 @@ public class Meal extends AbstractBaseEntity {
     @NotBlank
     @Size(min = 2, max = 120)
     @Column(name = "description", nullable = false)
+    @SafeHtml(groups = {View.Web.class})
     private String description;
 
     @NotNull

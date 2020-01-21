@@ -23,6 +23,7 @@ import ru.javaops.topjava.util.exeption.ErrorType;
 import ru.javaops.topjava.web.json.JsonUtil;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -112,7 +113,7 @@ public abstract class AbstractControllerTest {
         return wrap(put(url + "{id}", id));
     }
 
-    protected RequestWrapper doPost(String pad) throws Exception {
+    protected RequestWrapper doPost(String pad) {
         return wrap(MockMvcRequestBuilders.post(url + pad));
     }
 
@@ -164,11 +165,12 @@ public abstract class AbstractControllerTest {
         return jsonPath("$.type").value(type.name());
     }
 
-    public ResultMatcher detailMessage(String code) {
-        return jsonPath("$.details").value(getMessage(code));
+    public ResultMatcher detailMessage(String code, String... params) {
+        var args = Arrays.stream(params).map(arg -> getMessage(arg)).toArray();
+        return jsonPath("$.details").value(getMessage(code, args));
     }
 
-    private String getMessage(String code) {
-        return messageUtil.getMessage(code, MessageUtil.RU_LOCALE);
+    private String getMessage(String code, Object... args) {
+        return messageUtil.getMessage(code, MessageUtil.RU_LOCALE, args);
     }
 }

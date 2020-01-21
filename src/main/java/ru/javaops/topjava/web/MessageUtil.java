@@ -19,12 +19,12 @@ public class MessageUtil {
         this.messageSource = messageSource;
     }
 
-    public String getMessage(String code, Locale locale) {
-        return messageSource.getMessage(code, null, locale);
+    public String getMessage(String code, Locale locale, Object... args) {
+        return messageSource.getMessage(code, args, locale);
     }
 
-    public String getMessage(String code) {
-        return getMessage(code, LocaleContextHolder.getLocale());
+    public String getMessage(String code, Object... args) {
+        return getMessage(code, LocaleContextHolder.getLocale(), args);
     }
 
     public String getMessage(MessageSourceResolvable resolvable) {
