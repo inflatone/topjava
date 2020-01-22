@@ -10,14 +10,14 @@
 <div class="jumbotron">
     <div class="container text-center">
         <br>
-        <h4 class="my-3">${param.status}</h4>
+        <h4 class="my-3">${status}</h4>
         <h2>${typeMessage}</h2>
-        <h4 class="my-5">${param.message}</h4>
+        <h4 class="my-5">${message}</h4>
     </div>
 </div>
 
-<c:forEach items="${param.exception.stackTrace}" var="stackTrace">
-    ${stackTrace}
+<c:forEach items="${exception.stackTrace}" var="element">
+    ${element}
 </c:forEach>
 
 <jsp:include page="fragments/footer.jsp"/>

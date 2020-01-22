@@ -1,20 +1,17 @@
 package ru.javaops.topjava.util;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
+import org.slf4j.Logger;
 import ru.javaops.topjava.HasId;
-import ru.javaops.topjava.model.User;
+import ru.javaops.topjava.util.exeption.ErrorType;
 import ru.javaops.topjava.util.exeption.IllegalRequestDataException;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ValidationUtil {
     private static final Validator validator;
@@ -81,6 +78,17 @@ public class ValidationUtil {
     public static String getMessage(Throwable e) {
         var localizedMessage = e.getLocalizedMessage();
         return localizedMessage != null ? localizedMessage : e.getClass().getName();
+    }
+
+    public static Throwable logAndGetRootCause(
+            Logger log, HttpServletRequest request, Throwable e, boolean logException, ErrorType errorType) {
+        Throwable rootCause = getRootCause(e);
+        if (logException) {
+            log.error(errorType + " at request " + request.getRequestURL(), rootCause);
+        } else {
+            log.warn("{} at request {}: {}", errorType, request.getRequestURL(), rootCause.toString());
+        }
+        return rootCause;
     }
 
 }
