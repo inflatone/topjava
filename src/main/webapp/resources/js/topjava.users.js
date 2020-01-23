@@ -19,13 +19,7 @@ function enable(checkbox, id) {
 $(function () {
     makeEditable({
         ajaxUrl: userAjaxUrl,
-        datatableApi: $("#datatable").DataTable({
-            "ajax": {
-                "url": userAjaxUrl,
-                "dataSrc": ""
-            },
-            "paging": false,
-            "info": true,
+        datatableOpts: {
             "columns": [
                 {
                     "data": "name"
@@ -74,12 +68,12 @@ $(function () {
             "order": [
                 [0, "asc"]
             ],
-            "createRow": function (row, data, dataIndex) {
+            "createdRow": function (row, data, dataIndex) {
                 if (!data.enabled) {
                     $(row).attr("data-userEnabled", false);
                 }
             }
-        }),
+        },
         updateTable: function () {
             $.get(userAjaxUrl, updateTableByData);
         }

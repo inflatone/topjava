@@ -1,18 +1,21 @@
 package ru.javaops.topjava.web.meal;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.service.MealService;
 import ru.javaops.topjava.to.MealTo;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+import static ru.javaops.topjava.util.ValidationUtil.createErrorResponse;
 
 @RestController
 @RequestMapping("/ajax/profile/meals")
@@ -32,15 +35,23 @@ public class MealUIController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createOrUpdate(@RequestParam("id") Integer id,
-                               @RequestParam("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
-                               @RequestParam("description") String description,
-                               @RequestParam("calories") int calories
-    ) {
-        var meal = new Meal(id, dateTime, description, calories);
+    public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
+        return result.hasErrors() ? createErrorResponse(result) : createOrUpdate(meal);
+    }
+
+    public ResponseEntity<String> createOrUpdate(Meal meal) {
         if (meal.isNew()) {
             super.create(meal);
+        } else {
+            super.update(meal, meal.getId());
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @GetMapping("/{id}")
+    public Meal get(@PathVariable int id) {
+        return super.get(id);
     }
 
     @Override
