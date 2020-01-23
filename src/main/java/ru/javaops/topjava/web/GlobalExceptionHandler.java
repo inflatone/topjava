@@ -48,12 +48,6 @@ public class GlobalExceptionHandler {
                         "status", httpStatus)
         );
         modelAndView.setStatus(httpStatus);
-
-        // Interceptor is not invoked, put userTo
-        var authorizedUser = SecurityUtil.safeGet();
-        if (authorizedUser != null) {
-            modelAndView.addObject("userTo", authorizedUser.getUserTo());
-        }
         return modelAndView;
     }
 }
