@@ -142,12 +142,16 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     private void removeRoles(Set<Role> roles, int userId) {
-        jdbcTemplate.update("DELETE FROM user_roles r WHERE r.user_id=?", userId);
+        batchUpdate("DELETE FROM user_roles r WHERE r.user_id=? AND r.role=?", roles, userId);
     }
 
     private void insertRoles(Set<Role> roles, int userId) {
-        if (!CollectionUtils.isEmpty(roles)) {
-            jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", roles, roles.size(),
+        batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", roles, userId);
+    }
+
+    private void batchUpdate(String sqlTemplate, Set<Role> roles, int userId) {
+        if (!roles.isEmpty()) {
+            jdbcTemplate.batchUpdate(sqlTemplate, roles, roles.size(),
                     (ps, role) -> {
                         ps.setInt(1, userId);
                         ps.setString(2, role.name());
