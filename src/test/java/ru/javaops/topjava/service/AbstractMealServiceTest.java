@@ -1,6 +1,5 @@
 package ru.javaops.topjava.service;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaops.topjava.model.Meal;
@@ -97,7 +96,6 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     void createWithException() {
-        Assumptions.assumeTrue(isJpaBased(), "Validation not supported (JPA Only)");
         var dateTime = of(2015, Month.JUNE, 1, 18, 0);
         validateException(new Meal(null, dateTime, "  ", 300));
         validateException(new Meal(null, null, "description", 300));
