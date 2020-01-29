@@ -7,10 +7,12 @@
         <a href="meals" class="navbar-brand"><img src="resources/images/icon-meal.png" alt="iconMeal"> <spring:message
                 code="app.title"/> </a>
         <sec:authorize access="isAuthenticated()">
+
             <form class="form-inline my-2">
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <a class="btn btn-info mr-1" href="users"><spring:message code="user.title"/> </a>
                 </sec:authorize>
+                <a class="btn btn-info mr-1" href="profile">${userTo.name} <spring:message code="app.profile"/></a>
                 <a class="btn btn-primary" href="logout">
                     <span class="fa fa-sign-out"></span>
                 </a>
