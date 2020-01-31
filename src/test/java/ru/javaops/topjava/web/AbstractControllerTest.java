@@ -10,6 +10,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -103,6 +104,10 @@ public abstract class AbstractControllerTest {
 
     protected RequestWrapper doPut(int id) {
         return wrap(put(url + "{id}", id));
+    }
+
+    protected RequestWrapper doPost(String pad) throws Exception {
+        return wrap(MockMvcRequestBuilders.post(url + pad));
     }
 
     protected RequestWrapper doPost() {
