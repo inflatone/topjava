@@ -60,6 +60,13 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getNotFound() throws Exception {
+        perform(doGet(1).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void getAll() throws Exception {
         perform(doGet().basicAuth(ADMIN))
                 .andDo(print())
@@ -69,11 +76,18 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void remove() throws Exception {
+    void delete() throws Exception {
         perform(doDelete(USER_ID).basicAuth(ADMIN))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         USER_MATCHERS.assertMatch(userService.getAll(), ADMIN);
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(doDelete(1).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
