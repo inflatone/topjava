@@ -3,6 +3,7 @@ package ru.javaops.topjava.util;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import ru.javaops.topjava.HasId;
+import ru.javaops.topjava.util.exeption.IllegalRequestDataException;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import javax.validation.ConstraintViolation;
@@ -50,7 +51,7 @@ public class ValidationUtil {
 
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {
-            throw new IllegalArgumentException(bean + " must be new (id=null)");
+            throw new IllegalRequestDataException(bean + " must be new (id=null)");
         }
     }
 
@@ -60,7 +61,7 @@ public class ValidationUtil {
         if (bean.isNew()) {
             bean.setId(id);
         } else if (bean.getId() != id) {
-            throw new IllegalArgumentException(bean + " must be with id=" + id);
+            throw new IllegalRequestDataException(bean + " must be with id=" + id);
         }
     }
 
@@ -75,10 +76,11 @@ public class ValidationUtil {
     }
 
     public static ResponseEntity<String> createErrorResponse(BindingResult result) {
+        // TODO change to exception handler
         return ResponseEntity.unprocessableEntity().body(
                 result.getFieldErrors().stream()
-                .map(e -> String.format("[%s] %s", e.getField(), e.getDefaultMessage()))
-                .collect(Collectors.joining("<br>"))
+                        .map(e -> String.format("[%s] %s", e.getField(), e.getDefaultMessage()))
+                        .collect(Collectors.joining("<br>"))
         );
     }
 }
