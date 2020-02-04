@@ -10,7 +10,7 @@ import java.util.Set;
 import static ru.javaops.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
-    public static final TestMatchers<User> USER_MATCHERS = TestMatchers.useFieldsComparator(User.class, "registered", "meals");
+    public static final TestMatchers<User> USER_MATCHERS = TestMatchers.useFieldsComparator(User.class, "registered", "meals", "password");
 
     public static final int USER_ID = START_SEQ;
     public static final int ADMIN_ID = START_SEQ + 1;

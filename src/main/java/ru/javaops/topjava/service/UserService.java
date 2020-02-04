@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -18,17 +19,18 @@ import ru.javaops.topjava.util.UserUtil;
 
 import java.util.List;
 
-import static ru.javaops.topjava.util.ValidationUtil.checkNotFound;
-import static ru.javaops.topjava.util.ValidationUtil.checkNotFoundWithId;
+import static ru.javaops.topjava.util.ValidationUtil.*;
 
 @Service("userService")
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserService implements UserDetailsService {
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class UserService implements UserDetailsService {
 
     @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
-        return repository.save(user);
+        return prepareAndSave(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -69,14 +71,14 @@ public class UserService implements UserDetailsService {
         Assert.notNull(user, "user must not be null");
         // check works only for JDBC, disabled
         //checkNotFoundWithId(repository.save(user), user.getId());
-        repository.save(user);
+        prepareAndSave(user);
     }
 
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
     public void update(UserTo userTo) {
         User user = get(userTo.id());
-        repository.save(UserUtil.updateFromTo(user, userTo));
+        prepareAndSave(UserUtil.updateFromTo(user, userTo));
     }
 
     @Transactional
@@ -89,5 +91,9 @@ public class UserService implements UserDetailsService {
 
     public User getWithMeals(int id) {
         return checkNotFoundWithId(repository.getWithMeals(id), id);
+    }
+
+    private User prepareAndSave(User user) {
+        return repository.save(prepareToSave(user, passwordEncoder));
     }
 }
