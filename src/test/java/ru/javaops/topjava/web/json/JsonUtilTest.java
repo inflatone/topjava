@@ -29,7 +29,7 @@ class JsonUtilTest {
     }
 
     @Test
-    void testWriteOnlyAccess() {
+    void writeOnlyAccess() {
         String json = JsonUtil.writeValue(USER);
         System.out.println(json);
         assertThat(json, not(containsString("password")));

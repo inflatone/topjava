@@ -19,7 +19,8 @@
 
         <sec:authorize access="isAnonymous()">
             <div class="pt-4">
-                <a class="btn btn-lg btn-success" href="profile/register"><spring:message code="app.register"/> &raquo;</a>
+                <a class="btn btn-lg btn-success" href="profile/register"><spring:message code="app.register"/>
+                    &raquo;</a>
                 <button type="submit" class="btn btn-lg btn-primary" onclick="login('user@yandex.ru', 'password')">
                     <spring:message code="app.login"/> User
                 </button>
@@ -28,7 +29,7 @@
                 </button>
             </div>
         </sec:authorize>
-        <div class="lead py-4">Стек технологий: <br>
+        <div class="lead py-4"><spring:message code="app.stackTitle"/> <br>
             <a href="http://projects.spring.io/spring-security/">Spring Security</a>,
             <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html">Spring MVC</a>,
             <a href="http://projects.spring.io/spring-data-jpa/">Spring Data JPA</a>,
@@ -54,16 +55,7 @@
     </div>
 </div>
 
-<div class="container lead">
-    &nbsp;&nbsp;&nbsp;<a href="https://github.com/JavaOPs/topjava">Java Enterprise проект</a> с
-    регистрацией/авторизацией и интерфейсом на основе ролей (USER, ADMIN).
-    Администратор может создавать/редактировать/удалять пользователей, а пользователи - управлять своим
-    профилем и данными (день, еда, калории) через UI (по AJAX) и по REST интерфейсу с базовой авторизацией.
-    Возможна фильтрация данных по датам и времени, при этом цвет записи таблицы еды зависит от того, превышает ли
-    сумма
-    калорий за день норму (редактируемый параметр в профиле пользователя).
-    Весь REST интерфейс покрывается JUnit тестами, используя Spring MVC Test и Spring Security Test.
-</div>
+<div class="container lead"><spring:message code="app.description"/></div>
 <jsp:include page="fragments/footer.jsp"/>
 <script type="text/javascript">
     <c:if test="${not empty param.username}">
