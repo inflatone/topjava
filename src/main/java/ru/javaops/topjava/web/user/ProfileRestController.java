@@ -10,6 +10,8 @@ import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
 import ru.javaops.topjava.to.UserTo;
 
+import javax.validation.Valid;
+
 import static ru.javaops.topjava.web.SecurityUtil.authUserId;
 
 @RestController
@@ -35,7 +37,7 @@ public class ProfileRestController extends AbstractUserController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@RequestBody UserTo userTo) {
+    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         var created = super.create(userTo);
         var uriOfNewResource  = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -46,7 +48,7 @@ public class ProfileRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody UserTo userTo) {
+    public void update(@Valid @RequestBody UserTo userTo) {
         super.update(userTo, authUserId());
     }
 

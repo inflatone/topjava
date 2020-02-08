@@ -3,9 +3,7 @@ package ru.javaops.topjava.web.meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javaops.topjava.model.Meal;
 import ru.javaops.topjava.service.MealService;
@@ -15,8 +13,6 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
-import static ru.javaops.topjava.util.ValidationUtil.createErrorResponse;
 
 @RestController
 @RequestMapping("/ajax/profile/meals")
@@ -36,17 +32,12 @@ public class MealUIController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
-        return result.hasErrors() ? createErrorResponse(result) : createOrUpdate(meal);
-    }
-
-    public ResponseEntity<String> createOrUpdate(Meal meal) {
+    public void createOrUpdate(@Valid Meal meal) {
         if (meal.isNew()) {
             super.create(meal);
         } else {
             super.update(meal, meal.getId());
         }
-        return ResponseEntity.ok().build();
     }
 
     @Override

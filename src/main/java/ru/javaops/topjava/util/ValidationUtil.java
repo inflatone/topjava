@@ -78,15 +78,6 @@ public class ValidationUtil {
         return result;
     }
 
-    public static ResponseEntity<String> createErrorResponse(BindingResult result) {
-        // TODO change to exception handler
-        return ResponseEntity.unprocessableEntity().body(
-                result.getFieldErrors().stream()
-                        .map(e -> String.format("[%s] %s", e.getField(), e.getDefaultMessage()))
-                        .collect(Collectors.joining("<br>"))
-        );
-    }
-
     public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
         String password = user.getPassword();
         user.setPassword(StringUtils.hasText(password) ? passwordEncoder.encode(password)  : password);
