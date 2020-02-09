@@ -72,6 +72,6 @@ public class ExceptionInfoHandler {
             log.warn("{} at request {}: {}", errorType, request.getRequestURL(), rootCause.toString());
         }
         return new ErrorInfo(request.getRequestURL(), errorType,
-                details.length != 0 ? details : new String[]{rootCause.toString()});
+                details.length != 0 ? details : new String[]{ValidationUtil.getMessage(e)});
     }
 }
