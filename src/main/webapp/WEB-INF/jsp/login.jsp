@@ -59,7 +59,7 @@
 <jsp:include page="fragments/footer.jsp"/>
 <script type="text/javascript">
     <c:if test="${not empty param.username}">
-    setCredentials(${param.username}, "");
+    setCredentials("${param.username}", "");
     </c:if>
 
 

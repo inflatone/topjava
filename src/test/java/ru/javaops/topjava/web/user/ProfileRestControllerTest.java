@@ -88,7 +88,6 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Transactional(propagation = Propagation.NEVER)
     void updateDuplicate() throws Exception {
         var updatedTo = new UserTo(null, "newName", ADMIN.getEmail(), "newPass", 1500);
         perform(doPut().jsonBody(updatedTo).basicAuth(USER))

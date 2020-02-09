@@ -119,7 +119,6 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Transactional(propagation = Propagation.NEVER)
     void createDuplicate() throws Exception {
         var invalid = createNew();
         invalid.setEmail(USER.getEmail());
@@ -150,7 +149,6 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Transactional(propagation = Propagation.NEVER)
     void updateDuplicate() throws Exception {
         var invalid = createUpdated();
         invalid.setEmail(ADMIN.getEmail());
