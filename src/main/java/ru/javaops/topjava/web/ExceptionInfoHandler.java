@@ -19,7 +19,6 @@ import ru.javaops.topjava.util.exeption.IllegalRequestDataException;
 import ru.javaops.topjava.util.exeption.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,10 +34,14 @@ public class ExceptionInfoHandler {
             "meals_unique_user_datetime_idx", EXCEPTION_DUPLICATE_DATETIME
     );
 
-    @Autowired
-    private MessageUtil messageUtil;
-
     private static Logger log = getLogger(ExceptionInfoHandler.class);
+
+    private final MessageUtil messageUtil;
+
+    @Autowired
+    public ExceptionInfoHandler(MessageUtil messageUtil) {
+        this.messageUtil = messageUtil;
+    }
 
     // http://stackoverflow.com/a/22358422/548473
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
@@ -71,7 +74,7 @@ public class ExceptionInfoHandler {
                 : ((MethodArgumentNotValidException) e).getBindingResult();
         String[] details = result.getFieldErrors()
                 .stream()
-                .map(fieldError -> messageUtil.getMessage(fieldError))
+                .map(messageUtil::getMessage)
                 .toArray(String[]::new);
 
         return logAndGetErrorInfo(request, e, false, ErrorType.VALIDATION_ERROR, details);
@@ -90,7 +93,7 @@ public class ExceptionInfoHandler {
     }
 
     // https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType, String... details) {
+    private ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType, String... details) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(errorType + " at request " + request.getRequestURL(), rootCause);
@@ -98,6 +101,7 @@ public class ExceptionInfoHandler {
             log.warn("{} at request {}: {}", errorType, request.getRequestURL(), rootCause.toString());
         }
         return new ErrorInfo(request.getRequestURL(), errorType,
+                messageUtil.getMessage(errorType.getErrorCode()),
                 details.length != 0 ? details : new String[]{ValidationUtil.getMessage(e)});
     }
 }
