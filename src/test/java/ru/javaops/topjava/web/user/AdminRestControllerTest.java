@@ -125,7 +125,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         invalid.setEmail(USER.getEmail());
         perform(doPost().jsonUserWithPassword(invalid).basicAuth(ADMIN))
                 .andDo(print())
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
     }
@@ -156,7 +156,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         invalid.setEmail(ADMIN.getEmail());
         perform(doPut(USER.getId()).jsonUserWithPassword(invalid).basicAuth(ADMIN))
                 .andDo(print())
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
     }

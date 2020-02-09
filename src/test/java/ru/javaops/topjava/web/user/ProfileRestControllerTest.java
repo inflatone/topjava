@@ -71,7 +71,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void updateProfile() throws Exception {
-        var updatedTo = new UserTo(null, "newName", "newEmail@ya.ru", "newPassword", 1500);
+        var updatedTo = new UserTo(null, "newName", "newemail@ya.ru", "newPassword", 1500);
         perform(doPut().basicAuth(USER).jsonBody(updatedTo))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -93,7 +93,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
         var updatedTo = new UserTo(null, "newName", ADMIN.getEmail(), "newPass", 1500);
         perform(doPut().jsonBody(updatedTo).basicAuth(USER))
                 .andDo(print())
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
     }

@@ -1,6 +1,8 @@
 package ru.javaops.topjava.web.user;
 
 import org.slf4j.Logger;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
 import ru.javaops.topjava.to.UserTo;
@@ -17,8 +19,16 @@ public class AbstractUserController {
 
     protected final UserService service;
 
-    public AbstractUserController(UserService service) {
+    private UniqueMailValidator mailValidator;
+
+    public AbstractUserController(UserService service, UniqueMailValidator mailValidator) {
         this.service = service;
+        this.mailValidator = mailValidator;
+    }
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(mailValidator);
     }
 
     public List<User> getAll() {
