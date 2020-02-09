@@ -23,7 +23,6 @@ import ru.javaops.topjava.util.exeption.ErrorType;
 import ru.javaops.topjava.web.json.JsonUtil;
 
 import javax.annotation.PostConstruct;
-import java.util.Locale;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -170,6 +169,6 @@ public abstract class AbstractControllerTest {
     }
 
     private String getMessage(String code) {
-        return messageUtil.getMessage(code, Locale.ENGLISH);
+        return messageUtil.getMessage(code, MessageUtil.RU_LOCALE);
     }
 }
