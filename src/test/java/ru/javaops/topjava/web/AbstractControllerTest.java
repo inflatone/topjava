@@ -9,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -18,15 +19,18 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.javaops.topjava.AllActiveProfileResolver;
 import ru.javaops.topjava.TimingExtension;
 import ru.javaops.topjava.model.User;
+import ru.javaops.topjava.util.exeption.ErrorType;
 import ru.javaops.topjava.web.json.JsonUtil;
 
 import javax.annotation.PostConstruct;
+import java.util.Locale;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static ru.javaops.topjava.web.AbstractControllerTest.RequestWrapper.wrap;
 
 @Transactional
@@ -56,6 +60,9 @@ public abstract class AbstractControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    protected MessageUtil messageUtil;
 
     @PostConstruct
     private void postConstruct() {
@@ -152,7 +159,17 @@ public abstract class AbstractControllerTest {
             builder.with(authentication(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())));
             return this;
         }
+    }
 
+    public ResultMatcher errorType(ErrorType type) {
+        return jsonPath("$.type").value(type.name());
+    }
 
+    public ResultMatcher detailMessage(String code) {
+        return jsonPath("$.details").value(getMessage(code));
+    }
+
+    private String getMessage(String code) {
+        return messageUtil.getMessage(code, Locale.ENGLISH);
     }
 }

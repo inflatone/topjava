@@ -3,6 +3,8 @@ package ru.javaops.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
 import ru.javaops.topjava.to.UserTo;
@@ -18,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.javaops.topjava.TestUtil.contentTypeIsJson;
 import static ru.javaops.topjava.TestUtil.readFromJson;
 import static ru.javaops.topjava.UserTestData.*;
+import static ru.javaops.topjava.web.ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL;
 
 class ProfileRestControllerTest extends AbstractControllerTest {
     @Autowired
@@ -82,5 +85,16 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void updateDuplicate() throws Exception {
+        var updatedTo = new UserTo(null, "newName", ADMIN.getEmail(), "newPass", 1500);
+        perform(doPut().jsonBody(updatedTo).basicAuth(USER))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(errorType(ErrorType.VALIDATION_ERROR))
+                .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
     }
 }

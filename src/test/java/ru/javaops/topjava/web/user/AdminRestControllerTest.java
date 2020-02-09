@@ -3,6 +3,8 @@ package ru.javaops.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javaops.topjava.model.Role;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.service.UserService;
@@ -11,11 +13,11 @@ import ru.javaops.topjava.web.AbstractControllerTest;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javaops.topjava.TestUtil.contentTypeIsJson;
 import static ru.javaops.topjava.TestUtil.readFromJson;
 import static ru.javaops.topjava.UserTestData.*;
+import static ru.javaops.topjava.web.ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL;
 
 class AdminRestControllerTest extends AbstractControllerTest {
     @Autowired
@@ -113,7 +115,19 @@ class AdminRestControllerTest extends AbstractControllerTest {
         perform(doPost().jsonBody(invalid).basicAuth(ADMIN))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+                .andExpect(errorType(ErrorType.VALIDATION_ERROR));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void createDuplicate() throws Exception {
+        var invalid = createNew();
+        invalid.setEmail(USER.getEmail());
+        perform(doPost().jsonUserWithPassword(invalid).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(errorType(ErrorType.VALIDATION_ERROR))
+                .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
     }
 
     @Test
@@ -132,7 +146,19 @@ class AdminRestControllerTest extends AbstractControllerTest {
         perform(doPut(USER_ID).jsonBody(invalid).basicAuth(ADMIN))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+                .andExpect(errorType(ErrorType.VALIDATION_ERROR));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void updateDuplicate() throws Exception {
+        var invalid = createUpdated();
+        invalid.setEmail(ADMIN.getEmail());
+        perform(doPut(USER.getId()).jsonUserWithPassword(invalid).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(errorType(ErrorType.VALIDATION_ERROR))
+                .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
     }
 
     @Test

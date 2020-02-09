@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.SessionStatus;
 import ru.javaops.topjava.service.UserService;
 import ru.javaops.topjava.to.UserTo;
+import ru.javaops.topjava.web.ExceptionInfoHandler;
 import ru.javaops.topjava.web.SecurityUtil;
 
 import javax.validation.Valid;
@@ -41,7 +42,7 @@ public class ProfileUIController extends AbstractUserController {
             status.setComplete();
             return true;
         } catch (DataIntegrityViolationException e) {
-            result.rejectValue("email", EXCEPTION_DUPLICATE_EMAIL);
+            result.rejectValue("email", ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL);
             return false;
         }
 
@@ -69,7 +70,7 @@ public class ProfileUIController extends AbstractUserController {
             status.setComplete();
             return true;
         } catch (DataIntegrityViolationException e) {
-            result.rejectValue("email", EXCEPTION_DUPLICATE_EMAIL);
+            result.rejectValue("email", ExceptionInfoHandler.EXCEPTION_DUPLICATE_EMAIL);
             return false;
         }
     }
