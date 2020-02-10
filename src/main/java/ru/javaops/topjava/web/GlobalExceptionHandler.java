@@ -2,10 +2,10 @@ package ru.javaops.topjava.web;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.javaops.topjava.util.ValidationUtil;
 import ru.javaops.topjava.util.exeption.ErrorType;
 
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static ru.javaops.topjava.util.ValidationUtil.getRootCause;
+import static ru.javaops.topjava.util.ValidationUtil.logAndGetRootCause;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -26,16 +26,25 @@ public class GlobalExceptionHandler {
         this.messageUtil = messageUtil;
     }
 
-    @ExceptionHandler(Exception.class)
-    public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) throws Exception {
-        log.error("Exception at request " + request.getRequestURL(), e);
-        Throwable rootCause = getRootCause(e);
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ModelAndView wrongRequest(HttpServletRequest request, NoHandlerFoundException e) {
+        return logAndGetExceptionView(request, e, false, ErrorType.WRONG_REQUEST);
+    }
 
-        var httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    @ExceptionHandler(Exception.class)
+    public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) {
+        log.error("Exception at request " + request.getRequestURL(), e);
+        return logAndGetExceptionView(request, e, true, ErrorType.APP_ERROR);
+    }
+
+    private ModelAndView logAndGetExceptionView(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType) {
+        Throwable rootCause = logAndGetRootCause(log, request, e, logException, errorType);
+        var httpStatus = errorType.getStatus();
+
         var modelAndView = new ModelAndView("exception",
                 Map.of("exception", rootCause,
                         "message", ValidationUtil.getMessage(rootCause),
-                        "typeMessage", messageUtil.getMessage(ErrorType.APP_ERROR.getErrorCode()),
+                        "typeMessage", messageUtil.getMessage(errorType.getErrorCode()),
                         "status", httpStatus)
         );
         modelAndView.setStatus(httpStatus);
@@ -47,5 +56,4 @@ public class GlobalExceptionHandler {
         }
         return modelAndView;
     }
-
 }
