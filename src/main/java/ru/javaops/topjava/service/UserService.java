@@ -19,7 +19,8 @@ import ru.javaops.topjava.util.UserUtil;
 
 import java.util.List;
 
-import static ru.javaops.topjava.util.ValidationUtil.*;
+import static ru.javaops.topjava.util.ValidationUtil.checkNotFound;
+import static ru.javaops.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service("userService")
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -84,7 +85,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
     public void enable(int id, boolean enabled) {
-        var user = get(id);
+        var user = checkNotFoundWithId(get(id), id);
         user.setEnabled(enabled);
         repository.save(user); // !! need only for JDBC implementation
     }

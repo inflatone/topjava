@@ -166,11 +166,11 @@ public abstract class AbstractControllerTest {
     }
 
     public ResultMatcher detailMessage(String code, String... params) {
-        var args = Arrays.stream(params).map(arg -> getMessage(arg)).toArray();
+        var args = Arrays.stream(params).map(arg -> getMessage(arg)).toArray(String[]::new);
         return jsonPath("$.details").value(getMessage(code, args));
     }
 
-    private String getMessage(String code, Object... args) {
+    private String getMessage(String code, String... args) {
         return messageUtil.getMessage(code, MessageUtil.RU_LOCALE, args);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.javaops.topjava.util.ValidationUtil;
+import ru.javaops.topjava.util.exeption.ApplicationException;
 import ru.javaops.topjava.util.exeption.ErrorType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,22 +29,27 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ModelAndView wrongRequest(HttpServletRequest request, NoHandlerFoundException e) {
-        return logAndGetExceptionView(request, e, false, ErrorType.WRONG_REQUEST);
+        return logAndGetExceptionView(request, e, false, ErrorType.WRONG_REQUEST, null);
+    }
+
+    public ModelAndView applicationErrorHandler(HttpServletRequest request, ApplicationException e) {
+        return logAndGetExceptionView(request, e, true, e.getType(), messageUtil.getMessage(e));
     }
 
     @ExceptionHandler(Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) {
         log.error("Exception at request " + request.getRequestURL(), e);
-        return logAndGetExceptionView(request, e, true, ErrorType.APP_ERROR);
+        return logAndGetExceptionView(request, e, true, ErrorType.APP_ERROR, null);
     }
 
-    private ModelAndView logAndGetExceptionView(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType) {
+    private ModelAndView logAndGetExceptionView(HttpServletRequest request, Exception e, boolean logException,
+                                                ErrorType errorType, String message) {
         Throwable rootCause = logAndGetRootCause(log, request, e, logException, errorType);
         var httpStatus = errorType.getStatus();
 
         var modelAndView = new ModelAndView("exception",
                 Map.of("exception", rootCause,
-                        "message", ValidationUtil.getMessage(rootCause),
+                        "message", message != null ? message : ValidationUtil.getMessage(rootCause),
                         "typeMessage", messageUtil.getMessage(errorType.getErrorCode()),
                         "status", httpStatus)
         );
