@@ -14,7 +14,7 @@ public class Profiles {
 
     public static String getActiveDbProfile() {
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
+            Class.forName("org.hsqldb.jdbc.JDBCDriver");
             return HSQL_DB;
         } catch (ClassNotFoundException e) {
             try {

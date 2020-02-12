@@ -33,7 +33,7 @@
 
         <!--    Hibernate  -->
         <hibernate.version>5.4.7.Final</hibernate.version>
-        <hibernate-validator.version>6.0.17.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.0.18.Final</hibernate-validator.version>
         <javax-el.version>3.0.1-b11</javax-el.version>
 
         <!--    Tools  -->
@@ -72,7 +72,6 @@
                 <version>2.22.2</version>
                 <configuration>
                     <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
-                    <skipTests>false</skipTests>
                 </configuration>
             </plugin>
 
@@ -378,9 +377,6 @@
                     <version>2.5.0</version>
                 </dependency>
             </dependencies>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>postgres</id>
@@ -404,6 +400,9 @@
                     <scope>runtime</scope>
                 </dependency>
             </dependencies>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>heroku</id>
