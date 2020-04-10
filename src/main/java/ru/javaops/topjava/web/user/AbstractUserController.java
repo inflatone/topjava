@@ -25,7 +25,7 @@ public class AbstractUserController {
 
     protected final UserService service;
 
-    private UniqueMailValidator mailValidator;
+    private final UniqueMailValidator mailValidator;
 
     private boolean modificationRestriction;
 

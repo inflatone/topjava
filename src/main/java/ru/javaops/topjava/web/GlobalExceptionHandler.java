@@ -32,6 +32,7 @@ public class GlobalExceptionHandler {
         return logAndGetExceptionView(request, e, false, ErrorType.WRONG_REQUEST, null);
     }
 
+    @ExceptionHandler(ApplicationException.class)
     public ModelAndView applicationErrorHandler(HttpServletRequest request, ApplicationException e) {
         return logAndGetExceptionView(request, e, true, e.getType(), messageUtil.getMessage(e));
     }
