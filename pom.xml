@@ -17,7 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!--    Spring  -->
-        <spring.version>5.2.1.RELEASE</spring.version>
+        <spring.version>5.2.4.RELEASE</spring.version>
         <spring-data-jpa.version>2.2.0.RELEASE</spring-data-jpa.version>
 
         <jackson-json.version>2.10.1</jackson-json.version>
@@ -29,11 +29,11 @@
         <slf4j.version>1.7.25</slf4j.version>
 
         <!--    DB  -->
-        <postgresql.version>42.2.8</postgresql.version>
+        <postgresql.version>42.2.13</postgresql.version>
 
         <!--    Hibernate  -->
-        <hibernate.version>5.4.7.Final</hibernate.version>
-        <hibernate-validator.version>6.0.18.Final</hibernate-validator.version>
+        <hibernate.version>5.4.18.Final</hibernate.version>
+        <hibernate-validator.version>6.0.19.Final</hibernate-validator.version>
         <javax-el.version>3.0.1-b11</javax-el.version>
 
         <!--    Tools  -->
@@ -46,7 +46,7 @@
 
         <!--    Webjars-->
         <webjars-bootstrap.version>4.4.0</webjars-bootstrap.version>
-        <webjars-jquery.version>3.4.1</webjars-jquery.version>
+        <webjars-jquery.version>3.5.0</webjars-jquery.version>
         <webjars-datetimepicker.version>2.5.20</webjars-datetimepicker.version>
         <webjars-noty.version>3.1.4</webjars-noty.version>
         <webjars-datatables.version>1.10.20</webjars-datatables.version>
