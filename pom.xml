@@ -21,7 +21,7 @@
         <spring-data-jpa.version>2.2.0.RELEASE</spring-data-jpa.version>
 
         <jackson-json.version>2.10.1</jackson-json.version>
-        <jsoup.version>1.12.1</jsoup.version>
+        <jsoup.version>1.14.2</jsoup.version>
         <tomcat.version>9.0.27</tomcat.version>
 
         <!--    Logging  -->
